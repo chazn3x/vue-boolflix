@@ -17,8 +17,6 @@ export default {
     methods: {
         search() {
             if (data.search != '') {
-                data.contents = [];
-                let movies = [], series = [];
                 axios.get('https://api.themoviedb.org/3/search/movie', {
                     params: {
                         api_key: '3390a8a14e621ee87b8e65a286d5c250',
@@ -27,29 +25,39 @@ export default {
                     }
                 })
                 .then(response => {
-                    movies = response.data.results;
-                    axios.get('https://api.themoviedb.org/3/search/tv', {
-                        params: {
-                            api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                            query: data.search,
-                            language: 'it-IT'
+                    data.movies = response.data.results;
+                    data.movies.forEach(content => {
+                        try {
+                            content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
                         }
-                    })
-                    .then(response => {
-                        series = response.data.results;
-                        data.contents = movies.concat(series);
-                        data.contents.forEach(content => {
-                            try {
-                                content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
-                            }
-                            catch(err) {
-                                content.langImg = null;
-                            }
-                        });
+                        catch(err) {
+                            content.langImg = null;
+                        }
+                        content.vote = Math.floor(content.vote_average / 2);
+                    });
+                });
+                axios.get('https://api.themoviedb.org/3/search/tv', {
+                    params: {
+                        api_key: '3390a8a14e621ee87b8e65a286d5c250',
+                        query: data.search,
+                        language: 'it-IT'
+                    }
+                })
+                .then(response => {
+                    data.series = response.data.results;
+                    data.series.forEach(content => {
+                        try {
+                            content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
+                        }
+                        catch(err) {
+                            content.langImg = null;
+                        }
+                        content.vote = Math.floor(content.vote_average / 2);
                     });
                 });
             } else {
-                data.contents = [];
+                data.movies = [];
+                data.series = [];
             }
         }
     }

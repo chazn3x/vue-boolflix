@@ -1,15 +1,18 @@
 <template>
     <main>
-        <ResultsSection/>
+        <Movies/>
+        <Series/>
     </main>
 </template>
 
 <script>
-import ResultsSection from '../sections/ResultsSection.vue'
+import Movies from '../sections/Movies.vue'
+import Series from '../sections/Series.vue'
 export default {
     name: "Main",
     components: {
-        ResultsSection
+        Movies,
+        Series
     }
 }
 </script>

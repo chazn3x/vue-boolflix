@@ -2,5 +2,7 @@ import Vue from 'vue';
 
 export default Vue.observable({
     search: "",
-    contents: []
+    contents: [],
+    movies: [],
+    series: []
 });

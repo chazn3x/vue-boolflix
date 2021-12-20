@@ -1,7 +1,8 @@
 <template>
     <section>
+        <h2>Movies</h2>
         <div class="cards">
-            <Card v-for="(content, index) in data.contents" :key="index" :content="content"/>
+            <Card v-for="(content, index) in data.movies" :key="index" :content="content"/>
         </div>
     </section>
 </template>
@@ -10,7 +11,7 @@
 import data from '../../share/data.js'
 import Card from '../commons/Card.vue'
 export default {
-    name: "ResultsSection",
+    name: "Movies",
     components: {
         Card
     },
