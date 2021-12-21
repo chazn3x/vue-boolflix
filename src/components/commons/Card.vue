@@ -38,20 +38,21 @@
                         <span v-else>&#9734;</span>
                     </span> {{content.vote_count}} voti
                 </p>
-                <p v-else>-</p>
+                <p v-else>N/A</p>
             </div>
             <div class="cast">
                 <span>Cast: </span>
-                <p v-for="(actor, index) in cast" :key="index">{{actor}}</p>
+                <p v-for="(actor, index) in cast" :key="index">{{actor.name}}</p>
+                <!-- <p ref="cast"></p> -->
             </div>
             <div class="genres">
                 <span>Generi: </span>
-                <p v-for="(genre, index) in genres" :key="index">{{genre.name}}</p>
+                <p v-for="(genre, index) in genres" :key="index">{{genre}}</p>
             </div>
             <div class="overview">
                 <span>Overview: </span>
                 <p v-if="content.overview != ''">{{content.overview}}</p>
-                <p v-else>-</p>
+                <p v-else>N/A</p>
             </div>
         </div>
     </div>
@@ -68,14 +69,7 @@ export default {
     data() {
         return {
             data,
-            cast: [],
-            genres: [],
-            apiParams: {
-                params: {
-                    api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                    language: 'it-IT',
-                }
-            },
+            cast: []
         }
     },
     methods: {
@@ -92,42 +86,56 @@ export default {
             }
         },
         getCast() {
-            for (let i = 0; i < 5; i++) {
-                axios.get(`https://api.themoviedb.org/3/movie/${this.content.id}/credits`, this.apiParams)
-                .then(response => {
-                    this.cast.push(response.data.cast[i].name);
-                })
-                .catch(() => {
-                    axios.get(`https://api.themoviedb.org/3/tv/${this.content.id}/credits`, this.apiParams)
-                    .then(response => {
-                        this.cast.push(response.data.cast[i].name);
-                    })
-                    .catch(() => {
-                        this.cast = [];
-                    });
-                });
+            let type;
+            if (this.content.type != undefined) {
+                type = this.content.type;
+            } else {
+                type = this.content.media_type;
             }
-        },
-        getGenres() {
-            axios.get(`https://api.themoviedb.org/3/movie/${this.content.id}`, this.apiParams)
-            .then(response => {
-                this.genres = response.data.genres;
-                console.log(response.data.genres);
-            })
-            .catch(() => {
-                axios.get(`https://api.themoviedb.org/3/tv/${this.content.id}`, this.apiParams)
+            const apiParams = {
+                params: {
+                    api_key: '3390a8a14e621ee87b8e65a286d5c250',
+                    language: 'it-IT',
+                }
+            };
+            // setTimeout(() => {
+                axios.get(`https://api.themoviedb.org/3/${type}/${this.content.id}/credits`, apiParams)
                 .then(response => {
-                    this.genres = response.data.genres;
-                })
-                .catch(() => {
-                    this.genres = [];
+                    this.cast = response.data.cast;
+                    if (this.cast.length > 5) {
+                        this.cast.length = 5;
+                    }
+                    console.log(this.content.name, this.cast);
+                    // this.cast.forEach((actor, i) => {
+                    //     this.$refs.cast.innerHTML += actor.name;
+                    //     if (i < this.cast.length - 1) {
+                    //         this.$refs.cast.innerHTML += ', ';
+                    //     }
+                    // });
+                });
+            // }, 1000);
+        }
+    },
+    computed: {
+        genres() {
+            let genres = [];
+            this.content.genre_ids.forEach(id => {
+                data.genres.forEach(genre => {
+                    if (genre.id == id) {
+                        if (!genres.includes(genre.name)) {
+                            genres.push(genre.name);
+                        }
+                    }
                 });
             });
-        }
+            return genres;
+        },
+        // castResult() {
+        //     return this.cast;
+        // }
     },
     created() {
         this.getCast();
-        this.getGenres();
     }
 }
 </script>

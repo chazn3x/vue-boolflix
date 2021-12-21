@@ -36,21 +36,73 @@ export default {
             axios.get('https://api.themoviedb.org/3/trending/all/week', apiParams)
             .then(response => {
                 data.trending = response.data.results;
-                this.commons(data.trending);
+                data.myFunc.commons(data.trending, 'all');
             });
         },
-        commons(contents) {
-            contents.forEach(content => {
-                try {
-                    content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
-                }
-                catch(err) {
-                    content.langImg = null;
-                }
-                content.vote = Math.floor(content.vote_average / 2);
-                content.saved = false;
-            });
-        }
+        // commons(contents) {
+        //     contents.forEach(content => {
+        //         try {
+        //             content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
+        //         }
+        //         catch(err) {
+        //             content.langImg = null;
+        //         }
+        //         content.vote = Math.floor(content.vote_average / 2);
+        //         content.saved = false;
+        //         // const apiParams = {
+        //         //     params: {
+        //         //         api_key: '3390a8a14e621ee87b8e65a286d5c250',
+        //         //         language: 'it-IT',
+        //         //     }
+        //         // };
+        //         // content.cast = [];
+        //         // content.genres = [];
+        //         // axios.get(`https://api.themoviedb.org/3/movie/${content.id}/credits`, apiParams)
+        //         // .then(response => {
+        //         //     if (response.data.cast != undefined) {
+        //         //         content.cast = response.data.cast;
+        //         //         if (content.cast.length > 5) {
+        //         //             content.cast.length = 5;
+        //         //         }
+        //         //     }
+        //         // })
+        //         // .catch(() => {
+        //         //     content.cast = ['N/A'];
+        //         // });
+        //         // content.cast = [];
+        //         // content.genres = [];
+        //         // axios.get(`https://api.themoviedb.org/3/tv/${content.id}/credits`, apiParams)
+        //         // .then(response => {
+        //         //     if (response.data.cast != undefined) {
+        //         //         content.cast = response.data.cast;
+        //         //         if (content.cast.length > 5) {
+        //         //             content.cast.length = 5;
+        //         //         }
+        //         //     }
+        //         // })
+        //         // .catch(() => {
+        //         //     content.cast = ['N/A'];
+        //         // });
+        //         // axios.get(`https://api.themoviedb.org/3/movie/${content.id}`, apiParams)
+        //         // .then(response => {
+        //         //     if (response.data.genres != undefined) {
+        //         //         content.genres = response.data.genres;
+        //         //     }
+        //         // })
+        //         // .catch(() => {
+        //         //     content.genres = ['N/A'];
+        //         // });
+        //         // axios.get(`https://api.themoviedb.org/3/tv/${content.id}`, apiParams)
+        //         // .then(response => {
+        //         //     if (response.data.genres != undefined) {
+        //         //         content.genres = response.data.genres;
+        //         //     }
+        //         // })
+        //         // .catch(() => {
+        //         //     content.genres = ['N/A'];
+        //         // });
+        //     });
+        // }
     },
     created() {
         this.trending();

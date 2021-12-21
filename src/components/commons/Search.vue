@@ -25,12 +25,12 @@ export default {
                 axios.get('https://api.themoviedb.org/3/search/movie', apiParams)
                 .then(response => {
                     data.movies = response.data.results;
-                    this.commons(data.movies);
+                    data.myFunc.commons(data.movies, 'movie');
                 });
                 axios.get('https://api.themoviedb.org/3/search/tv', apiParams)
                 .then(response => {
                     data.series = response.data.results;
-                    this.commons(data.series);
+                    data.myFunc.commons(data.series, 'tv');
                 });
                 if (data.selected == 'Nuovi e popolari' || data.selected == 'La mia lista') {
                     data.selected = 'Home';
@@ -39,18 +39,6 @@ export default {
                 data.movies = [];
                 data.series = [];
             }
-        },
-        commons(contents) {
-            contents.forEach(content => {
-                try {
-                    content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
-                }
-                catch(err) {
-                    content.langImg = null;
-                }
-                content.vote = Math.floor(content.vote_average / 2);
-                content.saved = false;
-            });
         }
     }
 }
