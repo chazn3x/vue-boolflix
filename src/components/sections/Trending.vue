@@ -1,27 +1,22 @@
 <template>
     <section>
         <div class="section-title">
-            <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo movies">
-            <h2>Film</h2>
+            <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo new and popular">
+            <h2>Nuovi e popolari</h2>
         </div>
-        <div class="no-content" v-if="data.search != '' && data.movies.length == 0">
-            Non ci sono film che soddisfano i criteri di ricerca.
+        <div class="cards">
+            <Card v-for="(content, index) in data.trending" :key="index" :content="content"/>
         </div>
-        <div class="cards" v-else-if="data.search != ''">
-            <Card v-for="(content, index) in data.movies" :key="index" :content="content"/>
-        </div>
-        <div class="cards" v-else>
-            <Card v-for="(content, index) in data.trendingMovies" :key="index" :content="content"/>
-        </div>
+        <div class="no-content" v-if="data.trending.length == 0">Non ci sono contenuti che soddisfano i criteri di ricerca.</div>
     </section>
 </template>
 
 <script>
+import axios from 'axios'
 import data from '../../share/data.js'
 import Card from '../commons/Card.vue'
-import axios from 'axios'
 export default {
-    name: "Movies",
+    name: "Trending",
     components: {
         Card
     },
@@ -38,10 +33,10 @@ export default {
                     language: 'it-IT'
                 }
             }
-            axios.get('https://api.themoviedb.org/3/trending/movie/week', apiParams)
+            axios.get('https://api.themoviedb.org/3/trending/all/week', apiParams)
             .then(response => {
-                data.trendingMovies = response.data.results;
-                this.commons(data.trendingMovies);
+                data.trending = response.data.results;
+                this.commons(data.trending);
             });
         },
         commons(contents) {

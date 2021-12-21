@@ -1,0 +1,44 @@
+@mixin searchBar {
+    .search-bar {
+        background-color: rgb(13,13,13);
+        padding: 10px 10px;
+        border-bottom: 1px solid red;
+        color: white;
+        input {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 300px;
+            margin-left: 10px;
+            font-weight: 100;
+            font-size: 1.1rem;
+            &::placeholder {
+                font-size: 1rem;
+            }
+        }
+    }
+}
+@mixin sectionTitle {
+    .section-title {
+        display: flex;
+        align-items: center;
+        height: 2.5rem;
+        margin-bottom: 40px;
+        img {
+            height: 100%;
+            margin-right: 10px;
+        }
+        h2 {
+            border-left: 1px solid red;
+            padding-left: 10px;
+        }
+    }
+}
+@mixin noContent {
+    .no-content {
+        color: rgba(255,255,255,0.5);
+        font-weight: 300;
+        text-align: center;
+    }
+}
