@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="left">
-            <div class="logo">
+            <div class="logo" @click="data.selected='Home'">
                 <img src="../../assets/img/logo.png" alt="Boolflix logo">
             </div>
             <nav>
@@ -13,9 +13,12 @@
             </nav>
         </div>
         <div class="search">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <Search/>
+            <div class="search-bar" :class="{'opened' : data.searchBar}">
+                <div class="icon" @click.stop="expandSearch()">
+                    <i class="fas fa-search"></i>
+                </div>
+                <Search ref="searchInput"/>
+                <div class="del" v-if="data.search != ''" @click="data.search = ''">&#215;</div>
             </div>
         </div>
     </header>
@@ -27,7 +30,7 @@ import data from '../../share/data.js'
 export default {
     name: "Header",
     components: {
-        Search
+        Search,
     },
     data() {
         return {
@@ -40,6 +43,12 @@ export default {
             if (link == 'Nuovi e popolari' || link == 'Home' || link == 'La mia lista') {
                 data.search = '';
             }
+        },
+        expandSearch() {
+            if (!data.searchBar) {
+                data.searchBar = true;
+            }
+            this.$refs.searchInput.$el.focus();
         }
     }
 }
@@ -64,6 +73,7 @@ header {
         display: flex;
         align-items: center;
         .logo {
+            cursor: pointer;
             margin-right: 30px;
         }
         nav ul {
@@ -85,9 +95,6 @@ header {
     }
     .search {
         @include searchBar;
-        .search-bar {
-            background-color: rgb(20,20,20);
-        }
     }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <section>
-        <div class="section-title">
+        <div class="section-title" @click="data.selected='La mia lista'">
             <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo saved">
             <h2>La mia lista</h2>
         </div>

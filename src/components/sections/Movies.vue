@@ -1,17 +1,24 @@
 <template>
     <section>
-        <div class="section-title">
+        <div class="section-title" @click="data.selected='Film'">
             <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo movies">
             <h2>Film</h2>
         </div>
-        <div class="no-content" v-if="data.search != '' && data.movies.length == 0">
+        <div class="loader" v-if="data.loader">
+            <div class="cards">
+                <div class="empty-card" v-for="(card, index) in 20" :key="index">
+                    <img src="../../assets/img/logo-b.png" alt="Boolflix single letter loading">
+                </div>
+            </div>
+        </div>
+        <div class="no-content" v-else-if="data.search != '' && data.movies.length == 0">
             Non ci sono film che soddisfano i criteri di ricerca.
         </div>
         <div class="cards" v-else-if="data.search != ''">
-            <Card v-for="(content, index) in data.movies" :key="index" :content="content"/>
+            <Card v-for="content in data.movies" :key="content.id" :content="content"/>
         </div>
         <div class="cards" v-else>
-            <Card v-for="(content, index) in data.trendingMovies" :key="index" :content="content"/>
+            <Card v-for="content in data.trendingMovies" :key="content.id" :content="content"/>
         </div>
     </section>
 </template>
@@ -43,44 +50,7 @@ export default {
                 data.trendingMovies = response.data.results;
                 data.myFunc.commons(data.trendingMovies, 'movie');
             });
-        },
-        // commons(contents) {
-        //     contents.forEach(content => {
-        //         try {
-        //             content.langImg = require('../../assets/img/flags/' + content.original_language + '.png');
-        //         }
-        //         catch(err) {
-        //             content.langImg = null;
-        //         }
-        //         content.vote = Math.floor(content.vote_average / 2);
-        //         content.saved = false;
-        //         content.type = 'movie';
-        //         const apiParams = {
-        //             params: {
-        //                 api_key: '3390a8a14e621ee87b8e65a286d5c250',
-        //                 language: 'it-IT',
-        //             }
-        //         };
-        //         axios.get(`https://api.themoviedb.org/3/movie/${content.id}/credits`, apiParams)
-        //         .then(response => {
-        //             if (response.data.cast != undefined) {
-        //                 content.cast = response.data.cast;
-        //             }
-        //         })
-        //         .catch(() => {
-        //             content.cast = ['N/A'];
-        //         });
-        //         axios.get(`https://api.themoviedb.org/3/movie/${content.id}`, apiParams)
-        //         .then(response => {
-        //             if (response.data.genres != undefined) {
-        //                 content.genres = response.data.genres;
-        //             }
-        //         })
-        //         .catch(() => {
-        //             content.genres = ['N/A'];
-        //         });
-        //     });
-        // }
+        }
     },
     created() {
         this.trending();
@@ -92,4 +62,26 @@ export default {
 @import '../../assets/style/mixins/mixin.scss';
 @include sectionTitle;
 @include noContent;
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 250px);
+    grid-gap: 30px;
+    justify-content: center;
+    .empty-card {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        background-color: rgb(13,13,13);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 35px;
+            animation: loading 2s linear infinite;
+            @keyframes loading {
+                0% {opacity: .7;}
+                50% {opacity: 0;}
+            }
+        }
+    }
+}
 </style>

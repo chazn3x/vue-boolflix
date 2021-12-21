@@ -1,9 +1,9 @@
 <template>
     <main>
-        <div class="no-content" v-if="data.search != '' && data.series.length == 0 && data.movies.length == 0">
+        <!-- <div class="no-content" v-if="data.search != '' && data.series.length == 0 && data.movies.length == 0">
             Non ci sono contenuti che soddisfano i criteri di ricerca.
-        </div>
-        <div class="sections" v-else>
+        </div> -->
+        <div class="sections">
             <Series v-if="data.selected == 'Home' || data.selected == 'Serie TV'"/>
             <Movies v-if="data.selected == 'Home' || data.selected == 'Film'"/>
             <Trending v-if="(data.selected == 'Home' || data.selected == 'Nuovi e popolari') && data.search == ''"/>

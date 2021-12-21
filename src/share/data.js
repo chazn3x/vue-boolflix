@@ -3,6 +3,8 @@ import Vue from 'vue';
 
 export default Vue.observable({
     search: "",
+    searchBar: false,
+    loader: false,
     searchMain: true,
     searchHeader: false,
     movies: [],
@@ -24,13 +26,11 @@ export default Vue.observable({
                 catch(err) {
                     content.langImg = null;
                 }
-                content.vote = Math.floor(content.vote_average / 2);
+                content.vote = Math.round(content.vote_average / 2);
                 content.saved = false;
                 if (type != 'all') {
                     content.type = type;
                 }
-                // console.log(content.genre_ids);
-                
             });
         }
     }

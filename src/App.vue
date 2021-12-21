@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @click="closeBar()">
     <Header/>
     <Main/>
     <Footer/>
@@ -10,7 +10,7 @@
 import Header from './components/macro/Header.vue'
 import Main from './components/macro/Main.vue'
 import Footer from './components/macro/Footer.vue'
-// import data from './share/data.js'
+import data from './share/data.js'
 export default {
   name: 'App',
   components: {
@@ -18,16 +18,18 @@ export default {
     Main,
     Footer
   },
-  // data() {
-  //   return {
-  //     data
-  //   }
-  // },
-  // methods: {
-  // },
-  // created() {
-  //   this.data.myFunc.getTrending();
-  // }
+  data() {
+    return {
+      data
+    }
+  },
+  methods: {
+    closeBar() {
+      if (data.search == '') {
+        data.searchBar = false
+      }
+    }
+  }
 }
 </script>
 

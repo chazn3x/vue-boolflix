@@ -1,9 +1,12 @@
 <template>
-    <div class="card">
+    <div class="card" @mouseover="getCast()" @mouseleave="callForCast = true">
         <div class="poster">
-            <img v-if="content.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + content.poster_path" :alt="content.title != undefined ? content.title + ' poster' : content.name + ' poster'">
+            <img class="poster-img" v-if="content.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + content.poster_path" :alt="content.title != undefined ? content.title + ' poster' : content.name + ' poster'">
             <div v-else class="null-poster">
                 <i class="fas fa-film"></i>
+                <div class="logo">
+                    <img src="../../assets/img/logo.png" alt="logo poster">
+                </div>
             </div>
         </div>
         <div class="info">
@@ -43,7 +46,6 @@
             <div class="cast">
                 <span>Cast: </span>
                 <p v-for="(actor, index) in cast" :key="index">{{actor.name}}</p>
-                <!-- <p ref="cast"></p> -->
             </div>
             <div class="genres">
                 <span>Generi: </span>
@@ -69,7 +71,8 @@ export default {
     data() {
         return {
             data,
-            cast: []
+            cast: [],
+            callForCast: true,
         }
     },
     methods: {
@@ -86,34 +89,32 @@ export default {
             }
         },
         getCast() {
-            let type;
-            if (this.content.type != undefined) {
-                type = this.content.type;
-            } else {
-                type = this.content.media_type;
-            }
-            const apiParams = {
-                params: {
-                    api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                    language: 'it-IT',
+            if (this.callForCast == true) {
+                this.callForCast = false;
+                let type;
+                if (this.content.type != undefined) {
+                    type = this.content.type;
+                } else {
+                    type = this.content.media_type;
                 }
-            };
-            // setTimeout(() => {
+                const apiParams = {
+                    params: {
+                        api_key: '3390a8a14e621ee87b8e65a286d5c250',
+                        language: 'it-IT',
+                    }
+                };
                 axios.get(`https://api.themoviedb.org/3/${type}/${this.content.id}/credits`, apiParams)
                 .then(response => {
                     this.cast = response.data.cast;
                     if (this.cast.length > 5) {
                         this.cast.length = 5;
                     }
+                    if (this.cast.length == 0) {
+                        this.cast = [{name: 'N/A'}];
+                    }
                     console.log(this.content.name, this.cast);
-                    // this.cast.forEach((actor, i) => {
-                    //     this.$refs.cast.innerHTML += actor.name;
-                    //     if (i < this.cast.length - 1) {
-                    //         this.$refs.cast.innerHTML += ', ';
-                    //     }
-                    // });
                 });
-            // }, 1000);
+            }
         }
     },
     computed: {
@@ -128,14 +129,11 @@ export default {
                     }
                 });
             });
+            if (genres.length == 0) {
+                genres = ['N/A'];
+            }
             return genres;
         },
-        // castResult() {
-        //     return this.cast;
-        // }
-    },
-    created() {
-        this.getCast();
     }
 }
 </script>
@@ -162,6 +160,7 @@ export default {
             span {
                 transition: .3s;
                 transform: scale(1.3);
+                -webkit-transform: scale(1.3);
             }
         }
     }
@@ -171,6 +170,9 @@ export default {
         height: 100%;
         z-index: -1;
         transition: opacity .3s, transform .5s;
+        .poster-img {
+            transition: .3s;
+        }
         img {
             width: 100%;
             height: 100%;
@@ -179,12 +181,23 @@ export default {
         .null-poster {
             width: 100%;
             height: 100%;
-            background-color: #333;
+            background-color: rgb(13,13,13);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
             svg {
                 font-size: 4rem;
+            }
+            .logo {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                padding: 5px 10px;
+                width: 90px;
+                img {
+                    width: 100%;
+                }
             }
         }
     }
@@ -236,8 +249,10 @@ export default {
         }
         .poster {
             opacity: .4;
-            transform: scale(1.1);
-            -webkit-transform: scale(1.1);
+            .poster-img {
+                transform: scale(1.1);
+                -webkit-transform: scale(1.1);
+            }
         }
     }
 }
