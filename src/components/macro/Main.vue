@@ -1,5 +1,6 @@
 <template>
     <main>
+        <Hero v-if="data.selected == data.pages[0] && data.search == ''"/>
         <div class="no-content" v-if="data.search != '' && data.series.length == 0 && data.movies.length == 0 && data.loader == false">
             Non ci sono contenuti che soddisfano i criteri di ricerca.
         </div>
@@ -13,6 +14,7 @@
 </template>
 
 <script>
+import Hero from '../sections/Hero.vue'
 import Movies from '../sections/Movies.vue'
 import Series from '../sections/Series.vue'
 import Trending from '../sections/Trending.vue'
@@ -25,7 +27,8 @@ export default {
         Movies,
         Series,
         Trending,
-        Saved
+        Saved,
+        Hero
     },
     data() {
         return {
@@ -55,7 +58,10 @@ export default {
 <style lang="scss">
 @import '../../assets/style/mixins/mixin.scss';
 main {
-    padding: 90px 40px 15px;
+    padding-top: 70px;
+    .sections {
+        padding: 0 40px;
+    }
     @include noContent;
     >.no-content {
         margin-top: 200px;

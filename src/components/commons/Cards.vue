@@ -28,10 +28,10 @@ export default {
     },
     methods: {
         next() {
-            this.$refs.carousel.scrollLeft += 840;
+            this.$refs.carousel.scrollLeft += 1000;
         },
         prev() {
-            this.$refs.carousel.scrollLeft -= 840;
+            this.$refs.carousel.scrollLeft -= 1000;
         }
     },
 }
@@ -43,7 +43,7 @@ export default {
         transition: opacity .3s;
         display: flex;
         position: absolute;
-        height: 135px;
+        height: 150px;
         width: 50px;
         align-items: center;
         justify-content: center;

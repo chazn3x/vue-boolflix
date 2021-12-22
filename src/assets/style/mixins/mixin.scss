@@ -108,6 +108,7 @@
             z-index: 5;
             align-items: center;
             justify-content: flex-start;
+            overflow-y: hidden;
             overflow-x: scroll;
             grid-template-columns: repeat(10, 250px);
             grid-gap: 15px;

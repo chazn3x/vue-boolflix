@@ -73,7 +73,7 @@ export default {
         color: rgb(13,13,13);
         position: absolute;
         z-index: -1;
-        font-size: 250px;
+        font-size: 300px;
         font-weight: 900;
         -webkit-text-stroke-width: 4px;
         -webkit-text-stroke-color: rgb(100,100,100);
@@ -92,7 +92,7 @@ export default {
         overflow-y: hidden;
         color: white;
         margin-left: auto;
-        width: 80%;
+        width: 90%;
         aspect-ratio: 3 / 2;
         background-color: rgb(24,24,24);
         border-radius: 4px;
