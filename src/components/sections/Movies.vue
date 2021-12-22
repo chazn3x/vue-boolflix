@@ -1,36 +1,36 @@
 <template>
-    <section>
-        <div class="section-title" @click="data.selected='Film'">
-            <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo movies">
-            <h2>Film</h2>
-        </div>
-        <div class="loader" v-if="data.loader">
-            <div class="cards">
-                <div class="empty-card" v-for="(card, index) in 20" :key="index">
-                    <img src="../../assets/img/logo-b.png" alt="Boolflix single letter loading">
+    <div>
+        <section>
+            <SectionTitle v-if="data.selected == data.pages[2] && data.search == ''" :title="'I 10 film più visti oggi'"/>
+            <Cards v-if="data.selected == data.pages[2] && data.search == ''" :contents="data.trendingMoviesToday" :limit="10"/>
+        </section>
+        <section>
+            <SectionTitle :title="title"/>
+            <div class="loader" v-if="data.loader">
+                <div class="cards">
+                    <div class="empty-card" v-for="(card, index) in 20" :key="index">
+                        <img src="../../assets/img/logo-b.png" alt="Boolflix single letter loading">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="no-content" v-else-if="data.search != '' && data.movies.length == 0">
-            Non ci sono film che soddisfano i criteri di ricerca.
-        </div>
-        <div class="cards" v-else-if="data.search != ''">
-            <Card v-for="content in data.movies" :key="content.id" :content="content"/>
-        </div>
-        <div class="cards" v-else>
-            <Card v-for="content in data.trendingMovies" :key="content.id" :content="content"/>
-        </div>
-    </section>
+            <div class="no-content" v-else-if="data.search != '' && data.movies.length == 0">
+                Non ci sono film che soddisfano i criteri di ricerca.
+            </div>
+            <Cards :contents="contents"/>
+        </section>
+    </div>
 </template>
 
 <script>
 import data from '../../share/data.js'
-import Card from '../commons/Card.vue'
+import Cards from '../commons/Cards.vue'
+import SectionTitle from '../commons/SectionTitle.vue'
 import axios from 'axios'
 export default {
     name: "Movies",
     components: {
-        Card
+        Cards,
+        SectionTitle
     },
     data() {
         return {
@@ -39,49 +39,44 @@ export default {
     },
     methods: {
         trending() {
-            const apiParams = {
-                params: {
-                    api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                    language: 'it-IT'
-                }
-            }
-            axios.get('https://api.themoviedb.org/3/trending/movie/week', apiParams)
+            axios.get(data.apiUrl + '/trending/movie/week', data.commonsApi)
             .then(response => {
                 data.trendingMovies = response.data.results;
                 data.myFunc.commons(data.trendingMovies, 'movie');
+            });
+            axios.get(data.apiUrl + '/trending/movie/day', data.commonsApi)
+            .then(response => {
+                data.trendingMoviesToday = response.data.results;
+                data.myFunc.commons(data.trendingMoviesToday, 'movie');
             });
         }
     },
     created() {
         this.trending();
+    },
+    computed: {
+        contents() {
+            let array;
+            if (data.search != '') {
+                array = data.movies;
+            } else array = data.trendingMovies;
+            return array;
+        },
+        title() {
+            let string;
+            if (data.selected == data.pages[0] && data.search == '') {
+                string = 'I film del momento';
+            } else if (data.search != '') {
+                string = 'Risultati di ricerca | Film'
+            } else string = 'I migliori film della settimana';
+            return string;
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/style/mixins/mixin.scss';
-@include sectionTitle;
 @include noContent;
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 250px);
-    grid-gap: 30px;
-    justify-content: center;
-    .empty-card {
-        width: 100%;
-        aspect-ratio: 2 / 3;
-        background-color: rgb(13,13,13);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        img {
-            width: 35px;
-            animation: loading 2s linear infinite;
-            @keyframes loading {
-                0% {opacity: .7;}
-                50% {opacity: 0;}
-            }
-        }
-    }
-}
+@include cards;
 </style>

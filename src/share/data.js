@@ -1,22 +1,29 @@
 import Vue from 'vue';
-// import axios from 'axios'
 
 export default Vue.observable({
     search: "",
     searchBar: false,
     loader: false,
-    searchMain: true,
-    searchHeader: false,
     movies: [],
     trendingMovies: [],
+    trendingMoviesToday: [],
     series: [],
     trendingSeries: [],
+    trendingSeriesToday: [],
     trending: [],
+    trendingToday: [],
     saved: [],
     savedIds: [],
     pages: ['Home', 'Serie TV', 'Film', 'Nuovi e popolari', 'La mia lista'],
     selected: 'Home',
     genres: [],
+    commonsApi: {
+        params: {
+            api_key: '3390a8a14e621ee87b8e65a286d5c250',
+            language: 'it-IT'
+        }
+    },
+    apiUrl: 'https://api.themoviedb.org/3',
     myFunc: {
         commons(contents, type) {
             contents.forEach(content => {
@@ -32,6 +39,6 @@ export default Vue.observable({
                     content.type = type;
                 }
             });
-        }
+        },
     }
 });

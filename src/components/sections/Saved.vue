@@ -1,23 +1,20 @@
 <template>
     <section>
-        <div class="section-title" @click="data.selected='La mia lista'">
-            <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo saved">
-            <h2>La mia lista</h2>
-        </div>
-        <div class="cards">
-            <Card v-for="(content, index) in data.saved" :key="index" :content="content"/>
-        </div>
+        <SectionTitle :title="data.pages[4]"/>
+        <Cards :contents="data.saved"/>
         <div class="no-content" v-if="data.saved.length == 0">Non ci sono contenuti salvati.</div>
     </section>
 </template>
 
 <script>
 import data from '../../share/data.js'
-import Card from '../commons/Card.vue'
+import Cards from '../commons/Cards.vue'
+import SectionTitle from '../commons/SectionTitle.vue'
 export default {
     name: "Saved",
     components: {
-        Card
+        Cards,
+        SectionTitle
     },
     data() {
         return {
@@ -29,6 +26,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../assets/style/mixins/mixin.scss';
-@include sectionTitle;
+@include cards;
 @include noContent;
 </style>

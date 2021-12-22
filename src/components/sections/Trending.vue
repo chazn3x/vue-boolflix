@@ -1,24 +1,22 @@
 <template>
     <section>
-        <div class="section-title" @click="data.selected='Nuovi e popolari'">
-            <img src="../../assets/img/logo-b.png" alt="Boolflix single letter logo new and popular">
-            <h2>Nuovi e popolari</h2>
-        </div>
-        <div class="cards">
-            <Card v-for="content in data.trending" :key="content.id" :content="content"/>
-        </div>
-        <div class="no-content" v-if="data.trending.length == 0">Non ci sono contenuti che soddisfano i criteri di ricerca.</div>
+        <SectionTitle v-if="data.selected == data.pages[3] && data.search == ''" :title="'I migliori titoli di oggi'"/>
+        <Cards v-if="data.selected == data.pages[3] && data.search == ''" :contents="data.trendingToday"/>
+        <SectionTitle :title="title"/>
+        <Cards :contents="data.trending" :limit="data.selected == data.pages[0] ? 10 : 0"/>
     </section>
 </template>
 
 <script>
 import axios from 'axios'
 import data from '../../share/data.js'
-import Card from '../commons/Card.vue'
+import Cards from '../commons/Cards.vue'
+import SectionTitle from '../commons/SectionTitle.vue'
 export default {
     name: "Trending",
     components: {
-        Card
+        Cards,
+        SectionTitle
     },
     data() {
         return {
@@ -27,27 +25,35 @@ export default {
     },
     methods: {
         trending() {
-            const apiParams = {
-                params: {
-                    api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                    language: 'it-IT'
-                }
-            }
-            axios.get('https://api.themoviedb.org/3/trending/all/week', apiParams)
+            axios.get(data.apiUrl + '/trending/all/week', data.commonsApi)
             .then(response => {
                 data.trending = response.data.results;
                 data.myFunc.commons(data.trending, 'all');
+            });
+            axios.get(data.apiUrl + '/trending/all/day', data.commonsApi)
+            .then(response => {
+                data.trendingToday = response.data.results;
+                data.myFunc.commons(data.trendingToday, 'all');
             });
         }
     },
     created() {
         this.trending();
+    },
+    computed: {
+        title() {
+            let string;
+            if (data.selected == data.pages[0] && data.search == '') {
+                string = 'I 10 migliori titoli del momento';
+            } else string = 'I migliori titoli della settimana';
+            return string;
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/style/mixins/mixin.scss';
-@include sectionTitle;
+@include cards;
 @include noContent;
 </style>

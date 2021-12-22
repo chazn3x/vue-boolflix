@@ -1,7 +1,7 @@
 <template>
     <div class="card" @mouseover="getCast()" @mouseleave="callForCast = true">
         <div class="poster">
-            <img class="poster-img" v-if="content.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + content.poster_path" :alt="content.title != undefined ? content.title + ' poster' : content.name + ' poster'">
+            <img class="poster-img" v-if="content.poster_path != null" :src="'https://image.tmdb.org/t/p/w780/' + content.poster_path" :alt="content.title != undefined ? content.title + ' poster' : content.name + ' poster'">
             <div v-else class="null-poster">
                 <i class="fas fa-film"></i>
                 <div class="logo">
@@ -18,13 +18,11 @@
             </div>
             <div class="title">
                 <span>Titolo: </span>
-                <h3 v-if="content.title != undefined">{{content.title}}</h3>
-                <h3 v-else>{{content.name}}</h3>
+                <h3>{{content.title || content.name}}</h3>
             </div>
             <div class="title-orig" v-if="content.title != content.original_title || content.name != content.original_name">
                 <span>Titolo originale: </span>
-                <p v-if="content.original_title != undefined">{{content.original_title}}</p>
-                <p v-else>{{content.original_name}}</p>
+                <p>{{content.original_title || content.original_name}}</p>
             </div>
             <div class="lang">
                 <span>Lingua originale: </span>
@@ -53,8 +51,7 @@
             </div>
             <div class="overview">
                 <span>Overview: </span>
-                <p v-if="content.overview != ''">{{content.overview}}</p>
-                <p v-else>N/A</p>
+                <p>{{content.overview || 'N/A'}}</p>
             </div>
         </div>
     </div>
@@ -77,8 +74,8 @@ export default {
     },
     methods: {
         add() {
-            data.saved.push(this.content);
-            data.savedIds.push(this.content.id);
+            data.saved.unshift(this.content);
+            data.savedIds.unshift(this.content.id);
         },
         remove() {
             for (let i = 0; i < data.saved.length; i++) {
@@ -97,13 +94,7 @@ export default {
                 } else {
                     type = this.content.media_type;
                 }
-                const apiParams = {
-                    params: {
-                        api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                        language: 'it-IT',
-                    }
-                };
-                axios.get(`https://api.themoviedb.org/3/${type}/${this.content.id}/credits`, apiParams)
+                axios.get(data.apiUrl + `/${type}/${this.content.id}/credits`, data.commonsApi)
                 .then(response => {
                     this.cast = response.data.cast;
                     if (this.cast.length > 5) {
@@ -112,7 +103,6 @@ export default {
                     if (this.cast.length == 0) {
                         this.cast = [{name: 'N/A'}];
                     }
-                    console.log(this.content.name, this.cast);
                 });
             }
         }

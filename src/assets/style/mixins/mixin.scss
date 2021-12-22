@@ -38,12 +38,12 @@
 }
 @mixin sectionTitle {
     .section-title {
+        margin: 30px 0px 40px 50px;
         cursor: pointer;
         display: flex;
         align-items: center;
         width: max-content;
         height: 2.5rem;
-        margin-bottom: 40px;
         img {
             height: 100%;
             margin-right: 10px;
@@ -52,6 +52,25 @@
             border-left: 1px solid red;
             padding-left: 10px;
         }
+        .next {
+            display: flex;
+            align-items: center;
+            filter: invert(.6);
+            opacity: 0;
+            height: 30%;
+            font-size: .9rem;
+            margin-left: 5px;
+            transition: .2s;
+            img {
+                margin-left: 2px;
+            }
+        }
+        &:hover {
+            .next {
+                opacity: 1;
+                margin-left: 15px;
+            }
+        }
     }
 }
 @mixin noContent {
@@ -59,5 +78,42 @@
         color: rgba(255,255,255,0.5);
         font-weight: 300;
         text-align: center;
+    }
+}
+@mixin cards {
+    .cards {
+        padding-bottom: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 250px);
+        grid-gap: 30px;
+        justify-content: center;
+        .empty-card {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            background-color: rgb(13,13,13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img {
+                width: 35px;
+                animation: loading 2s linear infinite;
+                @keyframes loading {
+                    0% {opacity: .7;}
+                    50% {opacity: 0;}
+                }
+            }
+        }
+        &.ten {
+            // min-height: 300px;
+            // max-width: 90%;
+            // position: relative;
+            scroll-behavior: smooth;
+            z-index: 5;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            grid-template-columns: repeat(10, 250px);
+            grid-gap: 15px;
+        }
     }
 }

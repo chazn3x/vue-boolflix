@@ -16,10 +16,8 @@ export default {
     },
     methods: {
         startSearch() {
-            console.log(data.loader);
             this.timeout = setTimeout(() => {
                 data.loader = false;
-                console.log(data.loader);
                 this.searching = false;
                 if (data.search != '') {
                     const apiParams = {
@@ -29,26 +27,32 @@ export default {
                             language: 'it-IT'
                         }
                     }
-                    axios.get('https://api.themoviedb.org/3/search/movie', apiParams)
+                    axios.get(data.apiUrl + '/search/movie', apiParams)
                     .then(response => {
                         data.movies = response.data.results;
                         data.myFunc.commons(data.movies, 'movie');
                     });
-                    axios.get('https://api.themoviedb.org/3/search/tv', apiParams)
+                    axios.get(data.apiUrl + '/search/tv', apiParams)
                     .then(response => {
                         data.series = response.data.results;
                         data.myFunc.commons(data.series, 'tv');
                     });
-                    if (data.selected == 'Nuovi e popolari' || data.selected == 'La mia lista') {
-                        data.selected = 'Home';
+                    if (data.selected == data.pages[3] || data.selected == data.pages[4]) {
+                        data.selected = data.pages[0];
+                        document.title = data.pages[0] + ' - Boolflix';
                     }
                 } else {
                     data.movies = [];
                     data.series = [];
                 }
-            }, 2000);
+            }, 1500);
         },
         search() {
+            window.scrollTo(0,0);
+            if (data.selected == data.pages[3] || data.selected == data.pages[4]) {
+                data.selected = data.pages[0];
+                document.title = data.pages[0] + ' - Boolflix';
+            }
             data.loader = true;
             if (data.search == '') {
                 data.loader = false;

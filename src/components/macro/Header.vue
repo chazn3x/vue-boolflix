@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="left">
-            <div class="logo" @click="data.selected='Home'">
+            <div class="logo" @click="checkLink(data.pages[0])">
                 <img src="../../assets/img/logo.png" alt="Boolflix logo">
             </div>
             <nav>
@@ -13,12 +13,12 @@
             </nav>
         </div>
         <div class="search">
-            <div class="search-bar" :class="{'opened' : data.searchBar}">
-                <div class="icon" @click.stop="expandSearch()">
+            <div class="search-bar" :class="{'opened' : data.searchBar}" @click.stop>
+                <div class="icon" @click="expandSearch()">
                     <i class="fas fa-search"></i>
                 </div>
                 <Search ref="searchInput"/>
-                <div class="del" v-if="data.search != ''" @click="data.search = ''">&#215;</div>
+                <div class="del" v-if="data.search != ''" @click="deleteSearch()">&#215;</div>
             </div>
         </div>
     </header>
@@ -39,8 +39,10 @@ export default {
     },
     methods: {
         checkLink(link) {
+            window.scrollTo(0,0);
+            document.title = link + ' - Boolflix';
             data.selected = link;
-            if (link == 'Nuovi e popolari' || link == 'Home' || link == 'La mia lista') {
+            if (link == data.pages[0] || link == data.pages[3] || link == data.pages[4]) {
                 data.search = '';
             }
         },
@@ -48,6 +50,10 @@ export default {
             if (!data.searchBar) {
                 data.searchBar = true;
             }
+            this.$refs.searchInput.$el.focus();
+        },
+        deleteSearch() {
+            data.search = '';
             this.$refs.searchInput.$el.focus();
         }
     }
@@ -58,7 +64,7 @@ export default {
 @import '../../assets/style/mixins/mixin.scss';
 header {
     position: fixed;
-    z-index: 2;
+    z-index: 10;
     width: 100%;
     background-color: rgb(13,13,13);
     height: 70px;
