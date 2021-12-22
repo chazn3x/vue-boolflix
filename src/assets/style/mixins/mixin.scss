@@ -104,16 +104,17 @@
             }
         }
         &.ten {
-            // min-height: 300px;
-            // max-width: 90%;
-            // position: relative;
             scroll-behavior: smooth;
             z-index: 5;
             align-items: center;
             justify-content: flex-start;
-            overflow-x: hidden;
+            overflow-x: scroll;
             grid-template-columns: repeat(10, 250px);
             grid-gap: 15px;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
         }
     }
 }

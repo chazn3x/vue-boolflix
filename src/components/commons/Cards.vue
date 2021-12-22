@@ -28,10 +28,10 @@ export default {
     },
     methods: {
         next() {
-            this.$refs.carousel.scrollLeft += 280;
+            this.$refs.carousel.scrollLeft += 840;
         },
         prev() {
-            this.$refs.carousel.scrollLeft -= 280;
+            this.$refs.carousel.scrollLeft -= 840;
         }
     },
 }

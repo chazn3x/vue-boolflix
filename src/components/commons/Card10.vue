@@ -75,7 +75,6 @@ export default {
         z-index: -1;
         font-size: 250px;
         font-weight: 900;
-        // text-shadow: 0 0 2px rgb(100,100,100), 0 0 1px rgb(100,100,100), 0 0 1px rgb(100,100,100);
         -webkit-text-stroke-width: 4px;
         -webkit-text-stroke-color: rgb(100,100,100);
     }

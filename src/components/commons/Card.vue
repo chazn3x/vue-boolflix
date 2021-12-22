@@ -197,7 +197,7 @@ export default {
         padding: 20px;
         display: flex;
         flex-direction: column;
-        overflow-y: scroll;
+        overflow-y: hidden;
         height: 100%;
         h3, p {
             display: inline;
@@ -236,6 +236,7 @@ export default {
     &:hover {
         .info {
             opacity: 1;
+            overflow-y: scroll;
         }
         .poster {
             opacity: .4;
