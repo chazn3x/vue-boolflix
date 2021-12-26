@@ -1,5 +1,5 @@
 <template>
-    <input type="text" :value="data.search" @input="evt=>data.search=evt.target.value" @keyup="search()" placeholder="Cerca un film o una serie TV" spellcheck="false" translate="false">
+    <input type="text" :value="data.search" @input="event=>data.search=event.target.value" @keyup="search()" placeholder="Cerca un film o una serie TV" spellcheck="false" translate="false">
 </template>
 
 <script>

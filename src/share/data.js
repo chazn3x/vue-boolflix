@@ -4,6 +4,7 @@ export default Vue.observable({
     menuIsOpen: false,
     search: "",
     searchBar: false,
+    screen: null,
     loader: false,
     show: false,
     top: null,

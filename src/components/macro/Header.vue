@@ -1,17 +1,17 @@
 <template>
-    <header>
-        <div class="wrapper" ref="header">
-            <div class="header-left" :class="{'search-open' : screen < 768 && data.searchBar}">
-                <div v-if="screen >= 768" class="logo logo-big" @click="checkLink(data.pages[0])">
+    <header ref="header">
+        <div class="wrapper">
+            <div class="header-left" :class="{'search-open' : data.screen < 768 && data.searchBar}">
+                <div v-if="data.screen >= 768" class="logo logo-big" @click="checkLink(data.pages[0])">
                     <img src="../../assets/img/logo.png" alt="Boolflix header big logo">
                 </div>
                 <div class="menu">
-                    <div v-if="screen < 768" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()">
+                    <div v-if="data.screen < 768" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
-                    <nav v-if="screen >= 768 || data.menuIsOpen" class="links">
+                    <nav v-if="data.screen >= 768 || data.menuIsOpen" class="links">
                         <ul>
                             <li v-for="(link, index) in data.pages" :key="index">
                                 <a href="#" :class="{'selected': link == data.selected}" @click.prevent="checkLink(link)">{{link}}</a>
@@ -20,7 +20,7 @@
                     </nav>
                 </div>
             </div>
-            <div v-if="screen < 768" class="header-center" :class="{'search-open' : screen < 768 && data.searchBar}">
+            <div v-if="data.screen < 768" class="header-center" :class="{'search-open' : data.screen < 768 && data.searchBar}">
                 <div class="logo logo-small">
                     <img src="../../assets/img/logo-b.png" alt="Boolflix header small logo" @click="checkLink(data.pages[0])">
                 </div>
@@ -52,8 +52,7 @@ export default {
     },
     data() {
         return {
-            data,
-            screen: null
+            data
         }
     },
     methods: {
@@ -93,12 +92,9 @@ export default {
     created() {
         window.addEventListener('scroll', () => {
             if (window.scrollY) {
-                this.$refs.header.style.background = 'linear-gradient(rgb(6,6,6), rgb(20,20,20))';
-            } else this.$refs.header.style.background = 'linear-gradient(rgb(6,6,6), transparent)';
-        });
-        this.screen = screen.width;
-        window.addEventListener('resize', () => {
-            this.screen = screen.width;
+                console.log("prova");
+                this.$refs.header.style.background = 'rgb(20,20,20)';
+            } else this.$refs.header.style.background = 'transparent';
         });
     }
 }
@@ -111,6 +107,7 @@ header {
     z-index: 10;
     width: 100%;
     height: 60px;
+    transition: .5s;
     @media screen and (min-width: 768px) {
         height: 70px;
     }
@@ -121,7 +118,6 @@ header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        transition: .5s;
         padding: 1rem;
         @media screen and (min-width: 768px) {
             padding: 1rem 2.5rem;
@@ -250,7 +246,7 @@ header {
                     display: flex;
                     justify-content: flex-end;
                     align-items: center;
-                    transition: .3s;
+                    transition: width .3s;
                     &>* {
                         transition: .3s;
                     }
@@ -327,11 +323,15 @@ header {
                     }
                     &.opened {
                         position: absolute;
-                        top: 0;
+                        top: 50%;
                         right: 0;
-                        height: 100%;
-                        width: 100%;
+                        transform: translateY(-50%);
+                        height: 60%;
+                        width: calc(100% - 2rem);
                         padding-left: 1rem;
+                        margin: 0 1rem;
+                        border: 0.5px inset rgba(255,255,255,0.5);
+                        background-color: rgba(0,0,0,0.7);
                         .search-input {
                             width: 100%;
                             input {
@@ -345,7 +345,10 @@ header {
                             }
                         }
                         @media screen and (min-width: 768px) {
-                            position: unset;
+                            max-width: 350px;
+                            right: 2.5rem;
+                            margin: 0;
+                            width: 100%;
                         }
                     }
                 }
