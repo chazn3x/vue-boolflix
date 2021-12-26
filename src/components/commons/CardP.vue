@@ -61,7 +61,7 @@
 import data from '../../share/data.js'
 import axios from 'axios'
 export default {
-    name: "Card",
+    name: "CardP",
     props: {
         content: Object
     },

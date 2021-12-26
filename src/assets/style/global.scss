@@ -5,6 +5,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 // commons
 body {
@@ -21,6 +25,7 @@ a {
 }
 section {
     position: relative;
+    margin-bottom: 50px;
 }
 // typo
 h2 {

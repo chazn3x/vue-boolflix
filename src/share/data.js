@@ -1,21 +1,59 @@
 import Vue from 'vue';
 
 export default Vue.observable({
+    menuIsOpen: false,
     search: "",
     searchBar: false,
     loader: false,
+    show: false,
+    top: null,
+    left: null,
     movies: [],
-    trendingMovies: [],
-    trendingMoviesToday: [],
     series: [],
-    trendingSeries: [],
-    trendingSeriesToday: [],
-    trending: [],
-    trendingToday: [],
     saved: [],
     savedIds: [],
     pages: ['Home', 'Serie TV', 'Film', 'Nuovi e popolari', 'La mia lista'],
     selected: 'Home',
+    trending: {
+        trendingEndpoints: [
+            {
+                enpoint: '/trending/all/week',
+                type: 'all',
+                contents: 'allWeek'
+            },
+            {
+                enpoint: '/trending/all/day',
+                type: 'all',
+                contents: 'allDay'
+            },
+            {
+                enpoint: '/trending/tv/week',
+                type: 'tv',
+                contents: 'seriesWeek'
+            },
+            {
+                enpoint: '/trending/tv/day',
+                type: 'tv',
+                contents: 'seriesDay'
+            },
+            {
+                enpoint: '/trending/movie/week',
+                type: 'movie',
+                contents: 'moviesWeek'
+            },
+            {
+                enpoint: '/trending/movie/day',
+                type: 'movie',
+                contents: 'moviesDay'
+            },
+        ],
+        allWeek: [],
+        moviesWeek: [],
+        seriesWeek: [],
+        allDay: [],
+        moviesDay: [],
+        seriesDay: [],
+    },
     genres: [],
     commonsApi: {
         params: {

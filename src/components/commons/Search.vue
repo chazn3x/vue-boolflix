@@ -1,5 +1,5 @@
 <template>
-    <input type="text" v-model="data.search" @keyup="search()" placeholder="Cerca un film o una serie TV">
+    <input type="text" :value="data.search" @input="evt=>data.search=evt.target.value" @keyup="search()" placeholder="Cerca un film o una serie TV" spellcheck="false" translate="false">
 </template>
 
 <script>

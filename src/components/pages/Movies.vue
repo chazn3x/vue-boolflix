@@ -2,7 +2,7 @@
     <div>
         <section>
             <SectionTitle v-if="data.selected == data.pages[2] && data.search == ''" :title="'I 10 film più visti oggi'"/>
-            <Cards v-if="data.selected == data.pages[2] && data.search == ''" :contents="data.trendingMoviesToday" :limit="10"/>
+            <Cards v-if="data.selected == data.pages[2] && data.search == ''" :contents="data.trending.moviesDay" :limit="10"/>
         </section>
         <section>
             <SectionTitle :title="title"/>
@@ -25,7 +25,6 @@
 import data from '../../share/data.js'
 import Cards from '../commons/Cards.vue'
 import SectionTitle from '../commons/SectionTitle.vue'
-import axios from 'axios'
 export default {
     name: "Movies",
     components: {
@@ -37,29 +36,12 @@ export default {
             data
         }
     },
-    methods: {
-        trending() {
-            axios.get(data.apiUrl + '/trending/movie/week', data.commonsApi)
-            .then(response => {
-                data.trendingMovies = response.data.results;
-                data.myFunc.commons(data.trendingMovies, 'movie');
-            });
-            axios.get(data.apiUrl + '/trending/movie/day', data.commonsApi)
-            .then(response => {
-                data.trendingMoviesToday = response.data.results;
-                data.myFunc.commons(data.trendingMoviesToday, 'movie');
-            });
-        }
-    },
-    created() {
-        this.trending();
-    },
     computed: {
         contents() {
             let array;
             if (data.search != '') {
                 array = data.movies;
-            } else array = data.trendingMovies;
+            } else array = data.trending.moviesWeek;
             return array;
         },
         title() {

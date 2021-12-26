@@ -1,7 +1,7 @@
 <template>
     <section>
         <SectionTitle v-if="data.selected == data.pages[1] && data.search == ''" :title="'Le 10 serie TV più viste oggi'"/>
-        <Cards v-if="data.selected == data.pages[1] && data.search == ''" :contents="data.trendingSeriesToday" :limit="10"/>
+        <Cards v-if="data.selected == data.pages[1] && data.search == ''" :contents="data.trending.seriesDay" :limit="10"/>
         <SectionTitle :title="title"/>
         <div class="loader" v-if="data.loader">
             <div class="cards">
@@ -21,7 +21,6 @@
 import data from '../../share/data.js'
 import Cards from '../commons/Cards.vue'
 import SectionTitle from '../commons/SectionTitle.vue'
-import axios from 'axios'
 export default {
     name: "Series",
     components: {
@@ -33,29 +32,12 @@ export default {
             data,
         }
     },
-    methods: {
-        trending() {
-            axios.get(data.apiUrl + '/trending/tv/week', data.commonsApi)
-            .then(response => {
-                data.trendingSeries = response.data.results;
-                data.myFunc.commons(data.trendingSeries, 'tv');
-            });
-            axios.get(data.apiUrl + '/trending/tv/day', data.commonsApi)
-            .then(response => {
-                data.trendingSeriesToday = response.data.results;
-                data.myFunc.commons(data.trendingSeriesToday, 'tv');
-            });
-        }
-    },
-    created() {
-        this.trending();
-    },
     computed: {
         contents() {
             let array;
             if (data.search != '') {
                 array = data.series;
-            } else array = data.trendingSeries;
+            } else array = data.trending.seriesWeek;
             return array;
         },
         title() {
