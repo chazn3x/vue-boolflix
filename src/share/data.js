@@ -5,6 +5,11 @@ export default Vue.observable({
     search: "",
     searchBar: false,
     screen: null,
+    contentInfo: {
+        open: false,
+        content: null,
+        key: null
+    },
     loader: false,
     show: false,
     top: null,
@@ -25,7 +30,7 @@ export default Vue.observable({
             {
                 enpoint: '/trending/all/day',
                 type: 'all',
-                contents: 'allDay'
+                contents: 'allDay',
             },
             {
                 enpoint: '/trending/tv/week',
@@ -48,6 +53,7 @@ export default Vue.observable({
                 contents: 'moviesDay'
             },
         ],
+        status: 0,
         allWeek: [],
         moviesWeek: [],
         seriesWeek: [],

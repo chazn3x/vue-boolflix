@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      data
+      data,
     }
   },
   methods: {
@@ -39,9 +39,11 @@ export default {
     data.trending.trendingEndpoints.forEach(item => {
       axios.get(data.apiUrl + item.enpoint, data.commonsApi)
       .then(response => {
+          if (response.statusText == 'OK') {
+            data.trending.status++;
+          }
           data.trending[item.contents] = response.data.results;
           data.myFunc.commons(data.trending[item.contents], item.type);
-          console.log(item.enpoint, item.type, data.trending[item.contents]);
       });
     });
     // get all genres

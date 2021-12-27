@@ -28,7 +28,8 @@
             <div class="header-right">
                 <div class="search">
                     <div class="search-bar" @click.stop :class="{'opened' : data.searchBar}">
-                        <div class="search-icon" @click="openSearch()" :class="{'opened' : data.search}">
+                        <div class="search-icon" @click="openSearch()" :class="{'delete' : data.search}">
+                            <span></span>
                             <span></span>
                             <span></span>
                         </div>
@@ -92,9 +93,8 @@ export default {
     created() {
         window.addEventListener('scroll', () => {
             if (window.scrollY) {
-                console.log("prova");
                 this.$refs.header.style.background = 'rgb(20,20,20)';
-            } else this.$refs.header.style.background = 'transparent';
+            } else this.$refs.header.style.background = 'rgba(0,0,0,0)';
         });
     }
 }
@@ -112,7 +112,7 @@ header {
         height: 70px;
     }
     .wrapper {
-        background: linear-gradient(rgb(6,6,6), transparent);
+        background: linear-gradient(rgb(6,6,6), rgba(0,0,0,0));
         position: relative;
         height: 100%;
         display: flex;
@@ -246,10 +246,6 @@ header {
                     display: flex;
                     justify-content: flex-end;
                     align-items: center;
-                    transition: width .3s;
-                    &>* {
-                        transition: .3s;
-                    }
                     .search-icon {
                         height: 1.1rem;
                         width: 1.5rem;
@@ -265,16 +261,20 @@ header {
                         }
                         span {
                             display: block;
-                            transition: .2s;
+                            transition: all .2s;
+                            position: absolute;
                         }
                         span:first-of-type {
                             width: .9rem;
                             height: .9rem;
-                            position: absolute;
                             top: 0;
                             left: 0;
                             border: 1px solid rgba(255,255,255,0.9);
                             border-radius: 50%;
+                            transform-origin: right;
+                        }
+                        span:nth-of-type(2) {
+                            width: 0;
                             transform-origin: right;
                         }
                         span:last-of-type {
@@ -282,40 +282,41 @@ header {
                             width: .5rem;
                             height: 1px;
                             border-radius: 0 .5px .5px 0;
-                            position: absolute;
                             bottom: 0;
                             right: 6px;
                             transform-origin: right;
                             transform: rotate(45deg);
                         }
-                        &.opened {
-                            span {
+                        &.delete {
+                            span:not(:first-of-type) {
                                 top: 50%;
                                 left: 0;
-                                width: 100%;
+                                width: 100% !important;
                                 height: 1px;
                                 background-color: rgba(255,255,255,0.9);
                                 border: none;
                                 border-radius: .5px;
                                 transform-origin: center;
                                 }
-                            span:nth-of-type(1) {
-                                transform: rotate(45deg) translateY(-50%);
+                            span:first-of-type {
+                                opacity: 0;
                             }
                             span:nth-of-type(2) {
                                 transform: rotate(-45deg) translateY(-50%);
+                                -webkit-transform: rotate(-45deg) translateY(-50%);
                             }
                         }
                     }
                     .search-input {
                         width: 0px;
                         height: 100%;
-                        transition: width .2s;
+                        transition: width .2s, background-color 2s;
+                        background-color: rgba(0,0,0,0);
                         transform-origin: right;
                         input {
                             width: inherit;
                             height: 100%;
-                            background-color: transparent;
+                            background-color: rgba(0,0,0,0);
                             border: none;
                             outline: none;
                             color: white;
@@ -326,12 +327,19 @@ header {
                         top: 50%;
                         right: 0;
                         transform: translateY(-50%);
+                        -webkit-transform: translateY(-50%);
                         height: 60%;
                         width: calc(100% - 2rem);
                         padding-left: 1rem;
                         margin: 0 1rem;
                         border: 0.5px inset rgba(255,255,255,0.5);
+                        border-radius: 4px;
                         background-color: rgba(0,0,0,0.7);
+                        .search-icon {
+                            span:last-of-type {
+                                width: 7px;
+                            }
+                        }
                         .search-input {
                             width: 100%;
                             input {

@@ -10,7 +10,8 @@
   "dependencies": {
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",

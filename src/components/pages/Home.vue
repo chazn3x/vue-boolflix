@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <Hero/>
+        <Hero :heroContents="data.trending.allDay"/>
         <!-- <div class="sections">
             <Section :title="'I 10 migliori titoli della settimana'" :contents="data.trending.allDay" :limit="10"/>
             <Section :title="'I migliori film del momento'" :contents="data.trending.moviesWeek"/>
