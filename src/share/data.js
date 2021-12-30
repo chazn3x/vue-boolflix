@@ -8,7 +8,9 @@ export default Vue.observable({
     contentInfo: {
         open: false,
         content: null,
-        key: null
+        key: null,
+        cast: null,
+        genres: []
     },
     loader: false,
     show: false,

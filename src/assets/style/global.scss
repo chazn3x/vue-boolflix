@@ -11,11 +11,14 @@
     }
 }
 // commons
+html {
+    scroll-behavior: smooth;
+}
 body {
     font-family: 'Roboto', sans-serif;
     background-color: rgb(20,20,20);
     max-width: calc(100vw - (100vw - 100%));
-    overflow-x: hidden;
+    // overflow-x: hidden;
     position: relative;
 }
 *:not(input) {

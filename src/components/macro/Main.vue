@@ -1,6 +1,8 @@
 <template>
     <main>
-        <Home v-if="data.selected == data.pages[0]"/>
+        <div class="pages" :class="{'position' : position}">
+            <Home v-if="data.selected == data.pages[0]"/>
+        </div>
         <!-- <Saved v-if="data.selected == data.pages[4]"/> -->
         <!-- <CardHovered v-if="data.show"/> -->
         <ContentInfo/>
@@ -29,16 +31,23 @@ export default {
     },
     data() {
         return {
-            data
+            data,
+            position: false
         }
     },
+    watch: {
+        '$data.data.contentInfo.open'(open) {
+            if (open) {
+                this.position = true;
+            } else {
+                this.position = false;
+            }
+        },
+    }
 }
 </script>
 
 <style lang="scss">
-// main {
-//     min-height: max-content;
-// }
 // @import '../../assets/style/mixins/mixin.scss';
 // main {
 //     // padding-top: 70px;

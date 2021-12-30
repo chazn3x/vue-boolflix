@@ -52,7 +52,7 @@ export default {
             if (!data.contentInfo.open) {
                 this.interval = setInterval(() => {
                     this.$refs.carousel.style.transform = 'translate(-10%)';
-                }, 8000);
+                }, 3000);
             }
         },
         stopCarousel() {
@@ -74,9 +74,6 @@ export default {
         openInfo(content) {
             data.contentInfo.open = true;
             data.contentInfo.content = content;
-            if (data.contentInfo.open) {
-                document.body.style.overflow = 'hidden';
-            } else document.body.style.overflow = 'auto';
         }
     },
     mounted() {
@@ -96,10 +93,12 @@ export default {
         },
     },
     watch: {
-        '$data.data.contentInfo.open'(val) {
-            if (val) {
+        '$data.data.contentInfo.open'(open) {
+            if (open) {
                 this.stopCarousel();
-            } else this.startCarousel();
+            } else {
+                this.startCarousel();
+            }
         },
     }
 }
