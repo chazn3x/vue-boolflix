@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Hero from '../commons/Hero.vue'
+import Hero from './Hero.vue'
 import Movies from '../pages/Movies.vue'
 import Series from '../pages/Series.vue'
 import Trending from '../pages/Trending.vue'

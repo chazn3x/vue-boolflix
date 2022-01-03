@@ -1,64 +1,36 @@
 <template>
-    <div>
-        <section>
-            <SectionTitle v-if="data.selected == data.pages[2] && data.search == ''" :title="'I 10 film più visti oggi'"/>
-            <Cards v-if="data.selected == data.pages[2] && data.search == ''" :contents="data.trending.moviesDay" :limit="10"/>
-        </section>
-        <section>
-            <SectionTitle :title="title"/>
-            <div class="loader" v-if="data.loader">
-                <div class="cards">
-                    <div class="empty-card" v-for="(card, index) in 20" :key="index">
-                        <img src="../../assets/img/logo-b.png" alt="Boolflix single letter loading">
-                    </div>
-                </div>
-            </div>
-            <div class="no-content" v-else-if="data.search != '' && data.movies.length == 0">
-                Non ci sono film che soddisfano i criteri di ricerca.
-            </div>
-            <Cards :contents="contents"/>
-        </section>
+    <div class="series">
+        <Hero :heroContents="data.trending.moviesDay"/>
+        <div class="sections">
+            <Section :title="'Top 10 film oggi'" :contents="data.trending.moviesDay" :limit="10"/>
+            <Section :title="'I film del momento'" :contents="data.trending.moviesWeek"/>
+        </div>
     </div>
 </template>
 
 <script>
+import Hero from '../macro/Hero.vue'
+import Section from '../commons/Section.vue'
 import data from '../../share/data.js'
-import Cards from '../commons/Cards.vue'
-import SectionTitle from '../commons/SectionTitle.vue'
 export default {
-    name: "Movies",
+    name: 'Movies',
     components: {
-        Cards,
-        SectionTitle
+        Hero,
+        Section
     },
     data() {
         return {
             data
         }
-    },
-    computed: {
-        contents() {
-            let array;
-            if (data.search != '') {
-                array = data.movies;
-            } else array = data.trending.moviesWeek;
-            return array;
-        },
-        title() {
-            let string;
-            if (data.selected == data.pages[0] && data.search == '') {
-                string = 'I film del momento';
-            } else if (data.search != '') {
-                string = 'Risultati di ricerca | Film'
-            } else string = 'I migliori film della settimana';
-            return string;
-        }
     }
 }
 </script>
 
-<style lang="scss" scoped>
-@import '../../assets/style/mixins/mixin.scss';
-@include noContent;
-@include cards;
+<style lang="scss">
+.home {
+    .sections {
+        position: relative;
+        z-index: 1;
+    }
+}
 </style>

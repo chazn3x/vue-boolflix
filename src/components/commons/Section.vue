@@ -1,19 +1,22 @@
 <template>
     <section>
-        <SectionTitle :title="title"/>
-        <Cards :contents="contents" :limit="limit ? limit : ''"/>
+        <!-- <SectionTitle :title="title"/> -->
+        <div class="section-title">
+            <h2>{{title}}</h2>
+        </div>
+        <Cards :contents="contents" :limit="limit ? limit : null"/>
     </section>
 </template>
 
 <script>
 import data from '../../share/data.js'
 import Cards from '../commons/Cards.vue'
-import SectionTitle from '../commons/SectionTitle.vue'
+// import SectionTitle from '../commons/SectionTitle.vue'
 export default {
     name: 'Section',
     components: {
         Cards,
-        SectionTitle
+        // SectionTitle
     },
     data() {
         return {
@@ -27,3 +30,12 @@ export default {
     }
 }
 </script>
+<style lang="scss" scoped>
+.section-title {
+    margin: 30px 0;
+    padding-left: 1rem;
+    @media screen and (min-width: 768px) {
+        padding-left: 50px;
+    }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="content-info" :class="{'active' : data.contentInfo.open}" @click="closeInfo()" v-if="data.contentInfo.content">
+    <div class="content-info" ref="content" :class="{'active' : data.contentInfo.open}" @click="closeInfo()" v-if="data.contentInfo.content">
         <div class="card" @click.stop>
             <div class="close-icon" @click="closeInfo()">
                 <div class="icon">
@@ -9,14 +9,13 @@
             </div>
             <div class="preview" ref="preview">
                 <img :src="'https://image.tmdb.org/t/p/original/' + content.backdrop_path" alt="">
-                <div class="video" ref="youtubeWrapper">
+                <div v-show="content.key != 'abc'" class="video" ref="youtubeWrapper">
                     <youtube
-                    :video-id="key"
+                    :video-id="content.key"
                     :player-vars="playerVars"
                     :nocookie="true"
                     :width="100 + '%'"
                     :height="100 + '%'"
-                    @ready="ready()"
                     @error="error()"
                     @playing="playing()"
                     @ended="ended()"
@@ -25,7 +24,7 @@
                     ></youtube>
                 </div>
                 <div class="layover" ref="layover"></div>
-                <div class="video-controls" v-if="key.length > 3" :class="{'full-screen' : isFullScreen}" ref="controls">
+                <div class="video-controls" v-if="content.key != 'abc'" :class="{'full-screen' : isFullScreen}" ref="controls">
                     <div class="btn play-pause" :class="isPlaying ? 'pause' : 'play'" @click="playPause()">
                         <div class="btn-container">
                             <span></span>
@@ -51,8 +50,15 @@
                 </div>
             </div>
             <div class="info">
+                <div class="content-type" v-if="content.media_type == 'movie' || content.media_type == 'tv'">
+                    <div class="small-logo">
+                        <img src="../../assets/img/logo-b.png" alt="Boolflix small-logo content type">
+                    </div>
+                    <h4>{{content.media_type == 'movie' ? 'Film' : 'Serie'}}</h4>
+                </div>
                 <div class="content-title">
-                    <h2>{{content.title || content.name}}</h2>
+                    <img v-if="content.logo" :src="'https://image.tmdb.org/t/p/original/' + content.logo" alt="">
+                    <h2 v-else>{{content.title || content.name}}</h2>
                 </div>
                 <div class="text row">
                     <div class="left">
@@ -60,8 +66,11 @@
                             <div class="vote">
                                 <p>{{content.vote_average * 10}}% di voti positivi</p>
                             </div>
-                            <div class="year">
-                                <span>{{year}}</span>
+                            <div v-if="content.year" class="year">
+                                <span>{{content.year}}</span>
+                            </div>
+                            <div v-if="content.duration" class="duration">
+                                <span>{{content.duration}}</span>
                             </div>
                         </div>
                         <div class="overview">
@@ -70,10 +79,42 @@
                     </div>
                     <div class="right">
                         <div class="cast">
-                            <p><span class="list-title">Cast: </span><span>{{cast}}</span></p>
+                            <p><span class="list-title">Cast: </span><span>{{content.people.smallCast}}</span></p>
                         </div>
                         <div class="genres">
-                            <p><span class="list-title">Generi: </span><span>{{genres}}</span></p>
+                            <p><span class="list-title">Generi: </span><span>{{content.smallGenres}}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery">
+                    <h3>Sfondi</h3>
+                    <div class="backdrops" ref="backdrops">
+                        <a :href="'https://image.tmdb.org/t/p/original/' + backdrop.file_path" target="_blank" class="backdrop" v-for="(backdrop, index) in content.images.backdrops" :key="index">
+                            <img :src="'https://image.tmdb.org/t/p/original/' + backdrop.file_path" alt="">
+                        </a>
+                    </div>
+                    <!-- <h3>Loghi</h3>
+                    <div class="logos" ref="logos">
+                        <div class="logo" v-for="(logo, index) in images.logos" :key="index">
+                            <img :src="'https://image.tmdb.org/t/p/original/' + logo.file_path" alt="">
+                        </div>
+                    </div> -->
+                </div>
+                <div class="more-info">
+                    <h3>Info su <strong>{{content.title || content.name}}</strong></h3>
+                    <div class="text">
+                        <div class="crew">
+                            <p v-if="content.people.directors"><span class="list-title">Regia: </span><span>{{content.people.directors}}</span></p>
+                            <p v-if="content.people.producers"><span class="list-title">Produzione: </span><span>{{content.people.producers}}</span></p>
+                            <p v-if="content.people.creators"><span class="list-title">Produzione: </span><span>{{content.people.creators}}</span></p>
+                            <p v-if="content.people.executiveProducers"><span class="list-title">Produzione esecutiva: </span><span>{{content.people.executiveProducers}}</span></p>
+                            <p v-if="content.people.writers"><span class="list-title">Scrittori: </span><span>{{content.people.writers}}</span></p>
+                        </div>
+                        <div class="cast">
+                            <p><span class="list-title">Cast: </span><span>{{content.people.cast}}</span></p>
+                        </div>
+                        <div class="genres">
+                            <p><span class="list-title">Generi: </span><span>{{content.genres}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -83,13 +124,10 @@
 </template>
 
 <script>
-import axios from 'axios';
 import data from '../../share/data.js'
 import VueYoutube from 'vue-youtube'
 import Vue from 'vue'
 Vue.use(VueYoutube);
-import Dayjs from 'vue-dayjs';
-Vue.use(Dayjs);
 export default {
     name: 'ContentInfo',
     data() {
@@ -101,15 +139,11 @@ export default {
                 controls: 0,
                 rel: 0
             },
-            key: '',
             isPlaying: false,
             isStopped: true,
             isMuted: true,
             isFullScreen: false,
             timeout: null,
-            year: null,
-            cast: null,
-            genres: null
         }
     },
     methods: {
@@ -119,17 +153,14 @@ export default {
             this.isPlaying = false;
         },
         error() {
-            console.log(this.key);
             this.YTWrapper.style.opacity = '0';
-        },
-        ready() {
-            // console.log("prova");
-            // console.log(this.$refs.youtube.player.onError());
         },
         playing() {
             this.isPlaying = true;
             this.isStopped = false;
-            this.YTWrapper.style.opacity = '1';
+            setTimeout(() => {
+                this.YTWrapper.style.opacity = '1';
+            }, 500);
         },
         ended() {
             this.player.stopVideo();
@@ -146,7 +177,7 @@ export default {
                 this.player.pauseVideo();
             } else {
                 this.player.playVideo();
-                this.YTWrapper.style.opacity = '1';
+                // this.YTWrapper.style.opacity = '1';
             }
         },
         stop() {
@@ -165,29 +196,12 @@ export default {
             }
         },
         fullScreen() {
-            // if (!document.webkitFullscreenElement && this.$refs.preview.webkitRequestFullscreen) {
-            //     console.log("fullscreen safari");
-            //     this.$refs.preview.webkitRequestFullscreen();
-            // } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
-            //     console.log("exit fullscreen safari");
-            //     document.webkitExitFullscreen();
-            // }
-            // if (!document.fullscreenElement && this.$refs.preview.webkitRequestFullscreen) {
-            //     console.log("fullscreen");
-            //     this.$refs.preview.webkitRequestFullscreen();
-            // } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
-            //     console.log("exit fullscreen");
-            //     document.webkitExitFullscreen();
-            // }
             if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
                 if (this.$refs.preview.requestFullscreen) {
-                    console.log("fullscreen");
                     this.$refs.preview.requestFullscreen();
                 } else if (this.$refs.preview.webkitRequestFullscreen) {
-                    console.log("safari fullscreen");
                     this.$refs.preview.webkitRequestFullscreen();
                 } else if (this.$refs.preview.msRequestFullscreen) {
-                    console.log("mozilla fullscreen");
                     this.$refs.preview.msRequestFullscreen();
                 }
                 if (this.isMuted) {
@@ -204,13 +218,10 @@ export default {
                 }
             } else {
                 if (document.exitFullscreen) {
-                    console.log("exit fullscreen");
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) {
-                    console.log("safari exit fullscreen");
                     document.webkitExitFullscreen();
                 } else if (document.msExitFullscreen) {
-                    console.log("mozilla exit fullscreen");
                     document.msExitFullscreen();
                 }
             }
@@ -229,41 +240,6 @@ export default {
                 this.$refs.preview.style.cursor = 'none';
             }, 3000);
         },
-        getGenres(content) {
-            data.contentInfo.genres = [];
-            content.genre_ids.forEach(id => {
-                data.genres.forEach(genre => {
-                    if (genre.id == id) {
-                        if (!data.contentInfo.genres.includes(genre.name)) {
-                            data.contentInfo.genres.push(genre.name);
-                        }
-                    }
-                });
-            });
-            if (data.contentInfo.genres.length == 0) {
-                data.contentInfo.genres = ['N/A'];
-            }
-            let genres = data.contentInfo.genres;
-            if (genres.length > 3) {
-                genres.length = 3;
-            }
-            this.genres = '';
-            genres.forEach((genre, i) => {
-                this.genres += genre;
-                if (i < genres.length - 1) this.genres += ', '; else this.genres += '.'
-            });
-        },
-        getCast() {
-            let cast = data.contentInfo.cast;
-            if (cast.length > 3) {
-                cast.length = 3;
-            }
-            this.cast = '';
-            cast.forEach((actor, i) => {
-                this.cast += actor.name;
-                if (i < cast.length - 1) this.cast += ', '; else this.cast += '.'
-            });
-        }
     },
     computed: {
         content() {
@@ -280,31 +256,14 @@ export default {
         }
     },
     watch: {
-        '$data.data.contentInfo.content'(content) {
-            axios.get(data.apiUrl + `/${content.media_type}/${content.id}/videos`, data.commonsApi)
-            .then(response => {
-                if (response.data.results.length > 0) {
-                    this.key = response.data.results[0].key;
-                } else this.key = 'abc';
-            })
-            axios.get(data.apiUrl + `/${content.media_type}/${content.id}/credits`, data.commonsApi)
-            .then(response => {
-                data.contentInfo.cast = response.data.cast;
-                this.getCast();
-            });
-            this.year = this.$dayjs(content.release_date, 'YYYY-MM-DD').format('YYYY');
-            this.getGenres(content);
-        },
         '$data.data.contentInfo.open'(open) {
-            setTimeout(() => {
-                if (this.$refs.youtube) {
-                    if (open) {
-                        this.$refs.youtube.player.playVideo();
-                    } else {
-                        this.$refs.youtube.player.stopVideo();
-                    }
-                }
-            }, 200);
+            if (open) {
+                setTimeout(() => {
+                    this.$refs.content.scrollTop = 0;
+                    this.$refs.backdrops.scrollLeft = 0;
+                    this.$refs.youtube.player.playVideo();
+                });
+            } else this.$refs.youtube.player.stopVideo();
         },
     },
     created() {
@@ -327,7 +286,6 @@ export default {
             }
         });
         document.addEventListener('webkitfullscreenchange', () => {
-            console.log("prova");
             this.isFullScreen = !this.isFullScreen;
             if (this.isFullScreen) {
                 this.$refs.layover.style.opacity = '0';
@@ -364,7 +322,7 @@ export default {
         transform: scale(0);
         background-color: rgb(20,20,20);
         width: 100%;
-        min-height: 200vh;
+        min-height: 100vh;
         position: relative;
         padding: 1rem;
         overflow: hidden;
@@ -449,9 +407,9 @@ export default {
                 .btn {
                     width: 2.4rem;
                     height: 2.4rem;
-                    border-radius: 10%;
+                    border-radius: 50%;
                     margin-right: .6rem;
-                    background-color: rgba(0,0,0,0.5);
+                    background-color: rgba(0,0,0,0.4);
                     border: 2px solid rgba(200,200,200,0.5);
                     position: relative;
                     transition: opacity .2s;
@@ -482,9 +440,6 @@ export default {
                             span:first-of-type {
                                 top: 75%;
                                 transform: translateX(-50%);
-                                // right: 0;
-                                // transform-origin: right;
-                                // transform: rotate(30deg);
                             }
                             span:nth-of-type(2) {
                                 transform-origin: left;
@@ -593,27 +548,52 @@ export default {
                     &:hover {
                         opacity: .8;
                     }
-                    // img {
-                    //     width: 2.5rem;
-                    //     height: 2.5rem;
-                    //     // width: 100%;
-                    //     // height: 100%;
-                    // }
                 }
                 &.full-screen {
                     transition: .5s;
-                    // opacity: 0;
-                    // visibility: hidden;
                 }
             }
         }
         .info {
-            margin-top: 30vw;
+            margin-top: 20vw;
+            margin-bottom: 4rem;
+            h3 {
+                font-size: 1.5rem;
+                font-weight: 400;
+                margin-bottom: 1rem;
+            }
+            .content-type {
+                display: flex;
+                align-items: center;
+                height: 1.5rem;
+                margin-bottom: .3rem;
+                .small-logo {
+                    height: inherit;
+                    img {
+                        height: inherit;
+                        margin-right: .5rem;
+                    }
+                }
+                h4 {
+                    opacity: .8;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    font-weight: 700;
+                    font-size: 1rem;
+                }
+            }
+            .content-title {
+                img {
+                    max-width: 80%;
+                    max-height: 100px;
+                }
+            }
             .row {
                 display: flex;
             }
             .text {
-                margin-top: 2.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 2rem;
                 flex-direction: column;
                 .top {
                     align-items: center;
@@ -626,18 +606,20 @@ export default {
                             color: rgb(70,211,105);
                         }
                     }
+                    .year {
+                        margin-right: .4rem;
+                    }
                 }
                 .overview {
-                    line-height: 1.5rem;
+                    line-height: 1.7rem;
                     font-size: 1.2rem;
+                    letter-spacing: .6px;
                 }
                 .right {
                     margin-top: 1rem;
-                    font-weight: 300;
-                    font-style: italic;
+                    font-weight: 400;
                     .list-title {
-                        font-style: normal;
-                        font-weight: 400;
+                        font-weight: 500;
                         color: grey;
                     }
                     &>* {
@@ -645,16 +627,54 @@ export default {
                     }
                 }
             }
+            .gallery {
+                margin-bottom: 2rem;
+                .backdrops {
+                    overflow-x: scroll;
+                    overflow-y: hidden;
+                    display: flex;
+                    border-radius: 3px;
+                    height: 140px;
+                    .backdrop {
+                        width: 250px;
+                        height: 140px;
+                        flex-shrink: 0;
+                        margin-right: 10px;
+                        border-radius: 3px;
+                        img {
+                            object-fit: cover;
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 3px;
+                        }
+                    }
+                }
+            }
+            .more-info {
+                .text {
+                    margin-top: 1rem;
+                    font-weight: 400;
+                    .list-title {
+                        font-weight: 500;
+                        color: grey;
+                    }
+                    p {
+                        line-height: 1.4rem;
+                        margin-bottom: .6rem;
+                    }
+                }
+            }
         }
     }
     @media screen and (min-width: 768px) {
         min-height: 56vw;
-        background-color: rgba(0,0,0,0.7);
+        background-color: rgba(0,0,0,0.5);
+        backdrop-filter: blur(.5px);
+        -webkit-backdrop-filter: blur(.5px);
         .card {
             margin: 2.5rem auto;
             padding: 2rem;
             width: 768px;
-            // min-height: 90vh;
             border-radius: .5rem;
             .close-icon {
                 cursor: pointer;
@@ -671,7 +691,8 @@ export default {
             }
         }
         .info {
-            margin-top: 250px !important;
+            margin-top: 200px !important;
+            margin-bottom: 5rem !important;
             .content-title h2 {
                 font-size: 3.5rem;
             }

@@ -1,23 +1,24 @@
 <template>
     <div class="home">
         <Hero :heroContents="data.trending.allDay"/>
-        <!-- <div class="sections">
-            <Section :title="'I 10 migliori titoli della settimana'" :contents="data.trending.allDay" :limit="10"/>
-            <Section :title="'I migliori film del momento'" :contents="data.trending.moviesWeek"/>
-            <Section :title="'Le migliori serie del momento'" :contents="data.trending.allDay" :limit="20"/>
-        </div> -->
+        <div class="sections">
+            <Section :title="'Top 10 oggi'" :contents="data.trending.allDay" :limit="10"/>
+            <Section :title="'I titoli del momento'" :contents="data.trending.allWeek"/>
+            <Section :title="'Serie TV'" :contents="data.trending.seriesWeek"/>
+            <Section :title="'Film'" :contents="data.trending.moviesWeek"/>
+        </div>
     </div>
 </template>
 
 <script>
-import Hero from '../commons/Hero.vue'
-// import Section from '../commons/Section.vue'
+import Hero from '../macro/Hero.vue'
+import Section from '../commons/Section.vue'
 import data from '../../share/data.js'
 export default {
     name: 'Home',
     components: {
         Hero,
-        // Section
+        Section
     },
     data() {
         return {
@@ -29,12 +30,9 @@ export default {
 
 <style lang="scss">
 .home {
-    position: relative;
     .sections {
-        // position: absolute;
-        width: 100%;
-        padding-top: 70vh;
-        z-index: 2;
+        position: relative;
+        z-index: 1;
     }
 }
 </style>

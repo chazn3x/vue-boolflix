@@ -1,70 +1,40 @@
 <template>
     <main>
-        <div class="pages" :class="{'position' : position}">
+        <div class="pages">
             <Home v-if="data.selected == data.pages[0]"/>
+            <Series v-if="data.selected == data.pages[1]"/>
+            <Movies v-if="data.selected == data.pages[2]"/>
         </div>
         <!-- <Saved v-if="data.selected == data.pages[4]"/> -->
         <!-- <CardHovered v-if="data.show"/> -->
-        <ContentInfo/>
+        <!-- <ContentInfo/> -->
     </main>
 </template>
 
 <script>
 import Home from '../pages/Home.vue'
-// import Series from '../pages/Series.vue'
-// import Movies from '../pages/Movies.vue'
+import Series from '../pages/Series.vue'
+import Movies from '../pages/Movies.vue'
 // import Trending from '../pages/Trending.vue'
 // import Saved from '../pages/Saved.vue'
 // import CardHovered from '../commons/CardHovered.vue'
-import ContentInfo from '../commons/ContentInfo.vue'
+// import ContentInfo from '../commons/ContentInfo.vue'
 import data from '../../share/data.js'
 export default {
     name: "Main",
     components: {
         Home,
-        // Series,
-        // Movies,
+        Series,
+        Movies,
         // Trending,
         // Saved,
         // CardHovered,
-        ContentInfo
+        // ContentInfo
     },
     data() {
         return {
             data,
-            position: false
         }
     },
-    watch: {
-        '$data.data.contentInfo.open'(open) {
-            if (open) {
-                this.position = true;
-            } else {
-                this.position = false;
-            }
-        },
-    }
 }
 </script>
-
-<style lang="scss">
-// @import '../../assets/style/mixins/mixin.scss';
-// main {
-//     // padding-top: 70px;
-//     position: relative;
-//     .sections {
-//         padding: 70px 40px 40px;
-//         z-index: 2;
-//         &.home {
-//             padding-top: 0;
-//             position: absolute;
-//             width: 100%;
-//             top: 70vh;
-//         }
-//     }
-//     @include noContent;
-//     >.no-content {
-//         margin-top: 200px;
-//     }
-// }
-</style>

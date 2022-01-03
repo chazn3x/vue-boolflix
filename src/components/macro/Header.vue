@@ -2,11 +2,11 @@
     <header ref="header">
         <div class="wrapper">
             <div class="header-left" :class="{'search-open' : data.screen < 768 && data.searchBar}">
-                <div v-if="data.screen >= 768" class="logo logo-big" @click="checkLink(data.pages[0])">
+                <div v-if="data.screen >= 768" class="logo logo-big" @click="checkLink(data.pages[0])" title="Boolflix">
                     <img src="../../assets/img/logo.png" alt="Boolflix header big logo">
                 </div>
                 <div class="menu">
-                    <div v-if="data.screen < 768" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()">
+                    <div v-if="data.screen < 768" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()" title="Menu">
                         <span></span>
                         <span></span>
                         <span></span>
@@ -14,21 +14,21 @@
                     <nav v-if="data.screen >= 768 || data.menuIsOpen" class="links">
                         <ul>
                             <li v-for="(link, index) in data.pages" :key="index">
-                                <a href="#" :class="{'selected': link == data.selected}" @click.prevent="checkLink(link)">{{link}}</a>
+                                <a :title="link" :class="{'selected': link == data.selected}" @click.prevent="checkLink(link)">{{link}}</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </div>
             <div v-if="data.screen < 768" class="header-center" :class="{'search-open' : data.screen < 768 && data.searchBar}">
-                <div class="logo logo-small">
-                    <img src="../../assets/img/logo-b.png" alt="Boolflix header small logo" @click="checkLink(data.pages[0])">
+                <div class="logo logo-small" @click="checkLink(data.pages[0])" title="Boolflix">
+                    <img src="../../assets/img/logo-b.png" alt="Boolflix header small logo">
                 </div>
             </div>
             <div class="header-right">
                 <div class="search">
                     <div class="search-bar" @click.stop :class="{'opened' : data.searchBar}">
-                        <div class="search-icon" @click="openSearch()" :class="{'delete' : data.search}">
+                        <div class="search-icon" @click="openSearch()" :class="{'delete' : data.search}" title="Cerca">
                             <span></span>
                             <span></span>
                             <span></span>
@@ -58,6 +58,7 @@ export default {
     },
     methods: {
         checkLink(link) {
+            document.body.style.overflow = 'auto';
             window.scrollTo(0,0);
             document.title = link + ' - Boolflix';
             data.selected = link;
@@ -182,6 +183,7 @@ header {
                             color: rgba(255,255,255,0.5);
                             user-select: none;
                             -webkit-user-select: none;
+                            cursor: pointer;
                             &.selected {
                                 color: white;
                                 cursor: default;
