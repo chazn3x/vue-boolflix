@@ -7,7 +7,7 @@
                     <span></span>
                 </div>
             </div>
-            <div class="preview" ref="preview">
+            <div class="preview" ref="preview" :style="{height: previewHeight}">
                 <img :src="'https://image.tmdb.org/t/p/original/' + content.backdrop_path" alt="">
                 <div v-show="content.key != 'abc'" class="video" ref="youtubeWrapper">
                     <youtube
@@ -253,6 +253,12 @@ export default {
         },
         playerControls() {
             return this.$refs.controls;
+        },
+        previewHeight() {
+            let height;
+            if (data.screen > 768) height = 768 * 0.56 + 'px';
+            else height = data.screen * 0.56 + 'px';
+            return height;
         }
     },
     watch: {
@@ -264,7 +270,7 @@ export default {
                     this.$refs.youtube.player.playVideo();
                 });
             } else this.$refs.youtube.player.stopVideo();
-        },
+        }
     },
     created() {
         const controls = () => {
@@ -370,7 +376,6 @@ export default {
             top: 0;
             left: 0;
             width: 100%;
-            aspect-ratio: 16 / 9;
             z-index: -1;
             overflow: hidden;
             >img {
@@ -388,6 +393,7 @@ export default {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
+                -webkit-transform: translate(-50%, -50%);
                 z-index: -1;
                 opacity: 0;
                 transition: opacity .3s;

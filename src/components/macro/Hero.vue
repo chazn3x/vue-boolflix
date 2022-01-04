@@ -1,6 +1,6 @@
 <template>
     <div class="hero-wrapper">
-        <div class="hero" v-if="data.trending.status == 120 && heroContents.length == 20">
+        <div class="hero" v-if="data.apiCalls && heroContents.length == 20">
             <div class="carousel" ref="carousel" v-if="heroContents.length == 20">
                 <div class="card" v-for="(content, index) in contents" :key="index">
                     <div class="background-img">

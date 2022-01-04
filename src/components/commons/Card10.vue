@@ -39,7 +39,7 @@ export default {
 <style lang="scss" scoped>
 .card {
     width: 230px;
-    aspect-ratio: 7 / 5;
+    height: calc(230px * 0.71);
     flex-shrink: 0;
     position: relative;
     padding: .3rem;
@@ -93,6 +93,7 @@ export default {
 @media screen and (min-width: 768px) {
     .card {
         width: 290px;
+        height: calc(290px * 0.71);
         .number {
             font-size: 260px;
             line-height: 260px;

@@ -32,7 +32,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .section-title {
-    margin: 30px 0;
+    margin: 30px 0 10px;
     padding-left: 1rem;
     @media screen and (min-width: 768px) {
         padding-left: 50px;

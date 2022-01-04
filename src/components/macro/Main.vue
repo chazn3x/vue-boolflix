@@ -7,7 +7,6 @@
         </div>
         <!-- <Saved v-if="data.selected == data.pages[4]"/> -->
         <!-- <CardHovered v-if="data.show"/> -->
-        <!-- <ContentInfo/> -->
     </main>
 </template>
 
@@ -18,7 +17,6 @@ import Movies from '../pages/Movies.vue'
 // import Trending from '../pages/Trending.vue'
 // import Saved from '../pages/Saved.vue'
 // import CardHovered from '../commons/CardHovered.vue'
-// import ContentInfo from '../commons/ContentInfo.vue'
 import data from '../../share/data.js'
 export default {
     name: "Main",
@@ -29,7 +27,6 @@ export default {
         // Trending,
         // Saved,
         // CardHovered,
-        // ContentInfo
     },
     data() {
         return {

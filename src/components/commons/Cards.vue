@@ -1,9 +1,9 @@
 <template>
-    <div class="cards" v-if="data.trending.status == 120">
-        <div class="chevron next" @click="next()">
+    <div class="cards" v-if="data.apiCalls">
+        <div v-if="data.screen > 768" class="chevron next" @click="next()">
             <img src="../../assets/img/chevron.png" alt="">
         </div>
-        <div class="chevron prev" @click="prev()">
+        <div v-if="data.screen > 768" class="chevron prev" @click="prev()">
             <img src="../../assets/img/chevron.png" alt="">
         </div>
         <div class="top10" v-if="limit && contents.length == 20" ref="cards">
@@ -55,9 +55,10 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        overflow: hidden;
-        padding: 0 40px;
+        overflow-x: scroll;
+        overflow-y: hidden;
         scroll-behavior: smooth;
+        padding: 0 10px;
     }
     .chevron {
         display: flex;
@@ -101,6 +102,9 @@ export default {
             .chevron {
                 opacity: 1;
             }
+        }
+        .top10, .all {
+            padding: 0 40px;
         }
     }
 }

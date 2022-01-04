@@ -5,11 +5,11 @@
                 <img src="../../assets/img/logo-b.png" alt="Boolflix small logo">
             </div>
             <div class="poster">
-                <img :src="'https://image.tmdb.org/t/p/w780/' + content.backdrop_path" :alt="(content.title || content.name) + ' backdrop'">
+                <img :src="'https://image.tmdb.org/t/p/w780/' + (content.images.backdrops[randomPoster(content)].file_path || content.backdrop_path)" :alt="(content.title || content.name) + ' backdrop'">
             </div>
-            <div class="content-logo">
-                <img :src="'https://image.tmdb.org/t/p/original/' + content.logo" alt="">
-            </div>
+            <!-- <div class="content-logo">
+                <img :src="'https://image.tmdb.org/t/p/w300/' + content.logo" alt="">
+            </div> -->
         </div>
     </div>
 </template>
@@ -30,6 +30,11 @@ export default {
         openInfo(content) {
             data.contentInfo.open = true;
             data.contentInfo.content = content;
+        },
+        randomPoster(content) {
+            console.log(content.images.backdrops.length);
+            let index = Math.floor(Math.random() * content.images.backdrops.length);
+            return index;
         }
     }
 }
@@ -38,7 +43,7 @@ export default {
 <style lang="scss" scoped>
 .card {
     width: 230px;
-    aspect-ratio: 16 / 9;
+    height: calc(230px * 0.56);
     flex-shrink: 0;
     padding: .3rem;
     .content {
@@ -86,6 +91,7 @@ export default {
 @media screen and (min-width: 768px) {
     .card {
         width: 290px;
+        height: calc(290px * 0.56);
         cursor: pointer;
         // .content {
         // }
