@@ -2,8 +2,8 @@
     <div class="home">
         <Hero :heroContents="data.trending.allDay"/>
         <div class="sections">
-            <Section :title="'Top 10 oggi'" :contents="data.trending.allDay" :limit="10"/>
             <Section :title="'I titoli del momento'" :contents="data.trending.allWeek"/>
+            <Section :title="'Top 10 oggi'" :contents="data.trending.allDay" :limit="10"/>
             <Section :title="'Serie TV'" :contents="data.trending.seriesWeek"/>
             <Section :title="'Film'" :contents="data.trending.moviesWeek"/>
         </div>

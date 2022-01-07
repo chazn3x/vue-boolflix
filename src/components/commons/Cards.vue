@@ -1,15 +1,15 @@
 <template>
-    <div class="cards" v-if="data.apiCalls">
-        <div v-if="data.screen > 768" class="chevron next" @click="next()">
+    <div class="cards" v-if="data.apiCalls && data.top10.length > 0">
+        <div v-if="data.bigScreen && data.device != 'touch'" class="chevron next" @click="next()">
             <img src="../../assets/img/chevron.png" alt="">
         </div>
-        <div v-if="data.screen > 768" class="chevron prev" @click="prev()">
+        <div v-if="data.bigScreen && data.device != 'touch'" class="chevron prev" @click="prev()">
             <img src="../../assets/img/chevron.png" alt="">
         </div>
-        <div class="top10" v-if="limit && contents.length == 20" ref="cards">
+        <div class="top10" v-if="limit && contents.length == 20" ref="cards" :style="{overflowX: data.device == 'touch' ? 'scroll' : 'hidden'}">
             <Card10 v-for="(content, index) in contents.slice(0, limit)" :key="content.id" :content="content" :number="index + 1"/>
         </div>
-        <div class="all" v-else-if="contents.length == 20" ref="cards">
+        <div class="all" v-else-if="contents.length == 20" ref="cards" :style="{overflowX: data.device == 'touch' ? 'scroll' : 'hidden'}">
             <Card v-for="content in contents" :key="content.id" :content="content"/>
         </div>
     </div>
@@ -55,10 +55,9 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        overflow-x: scroll;
         overflow-y: hidden;
         scroll-behavior: smooth;
-        padding: 0 10px;
+        padding: 0 .5rem;
     }
     .chevron {
         display: flex;

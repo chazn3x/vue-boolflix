@@ -63,7 +63,7 @@
                 <div class="text row">
                     <div class="left">
                         <div class="row top">
-                            <div class="vote">
+                            <div class="vote" v-if="content.vote_average">
                                 <p>{{content.vote_average * 10}}% di voti positivi</p>
                             </div>
                             <div v-if="content.year" class="year">
@@ -78,15 +78,15 @@
                         </div>
                     </div>
                     <div class="right">
-                        <div class="cast">
+                        <div class="cast" v-if="content.people.smallCast">
                             <p><span class="list-title">Cast: </span><span>{{content.people.smallCast}}</span></p>
                         </div>
-                        <div class="genres">
+                        <div class="genres" v-if="content.smallGenres">
                             <p><span class="list-title">Generi: </span><span>{{content.smallGenres}}</span></p>
                         </div>
                     </div>
                 </div>
-                <div class="gallery">
+                <div class="gallery" v-if="content.images.backdrops.length > 0">
                     <h3>Sfondi</h3>
                     <div class="backdrops" ref="backdrops">
                         <a :href="'https://image.tmdb.org/t/p/original/' + backdrop.file_path" target="_blank" class="backdrop" v-for="(backdrop, index) in content.images.backdrops" :key="index">
@@ -110,10 +110,10 @@
                             <p v-if="content.people.executiveProducers"><span class="list-title">Produzione esecutiva: </span><span>{{content.people.executiveProducers}}</span></p>
                             <p v-if="content.people.writers"><span class="list-title">Scrittori: </span><span>{{content.people.writers}}</span></p>
                         </div>
-                        <div class="cast">
+                        <div class="cast" v-if="content.people.cast">
                             <p><span class="list-title">Cast: </span><span>{{content.people.cast}}</span></p>
                         </div>
-                        <div class="genres">
+                        <div class="genres" v-if="content.genres">
                             <p><span class="list-title">Generi: </span><span>{{content.genres}}</span></p>
                         </div>
                     </div>
@@ -213,7 +213,7 @@ export default {
                     this.$refs.youtube.player.playVideo();
                 }
                 this.YTWrapper.style.opacity = '1';
-                if (data.screen < 768) {
+                if (data.device == 'touch') {
                     screen.orientation.lock("landscape");
                 }
             } else {
@@ -223,6 +223,9 @@ export default {
                     document.webkitExitFullscreen();
                 } else if (document.msExitFullscreen) {
                     document.msExitFullscreen();
+                }
+                if (data.device == 'touch') {
+                    screen.orientation.lock("portrait");
                 }
             }
         },
@@ -256,7 +259,7 @@ export default {
         },
         previewHeight() {
             let height;
-            if (data.screen > 768) height = 768 * 0.56 + 'px';
+            if (data.bigScreen) height = 768 * 0.56 + 'px';
             else height = data.screen * 0.56 + 'px';
             return height;
         }

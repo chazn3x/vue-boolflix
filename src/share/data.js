@@ -5,17 +5,22 @@ export default Vue.observable({
     menuIsOpen: false,
     search: "",
     searchBar: false,
+    searchResults: [],
+    noResults: false,
+    searchLoader: false,
     screen: null,
+    bigScreen: false,
+    smallScreen: false,
+    device: null,
     contentInfo: {
         open: false,
         content: null
     },
     heroInterval: null,
-    show: false,
-    top: null,
-    left: null,
-    movies: [],
-    series: [],
+    cardInfo: {
+        open: false,
+        timeout: null
+    },
     saved: [],
     savedIds: [],
     pages: ['Home', 'Serie TV', 'Film', 'Nuovi e popolari', 'La mia lista'],
@@ -28,5 +33,6 @@ export default Vue.observable({
         moviesDay: [],
         seriesDay: [],
     },
+    top10: [],
     genres: [],
 });

@@ -20,7 +20,7 @@
                             <span>HTML</span>
                         </li>
                         <li>
-                            <span>CSS</span>
+                            <span>SCSS</span>
                         </li>
                         <li>
                             <span>JavaScript</span>
@@ -31,7 +31,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h5>API e addons:</h5>
+                    <h5>API e altro:</h5>
                     <ul>
                         <li>
                             <a href="https://www.themoviedb.org" target="_blank">The Movie Database API</a>

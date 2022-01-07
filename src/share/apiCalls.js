@@ -102,7 +102,6 @@ function getDataFromEndpoints() {
 function checkApiCalls() {
     if (apiStatus == 2) {
         data.apiCalls = true;
-        console.log('fine chiamate', data.apiCalls);
     } else setTimeout(() => {
         checkApiCalls();
     }, 250);

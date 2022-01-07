@@ -1,26 +1,26 @@
 <template>
     <header ref="header">
         <div class="wrapper">
-            <div class="header-left" :class="{'search-open' : data.screen < 768 && data.searchBar}">
-                <div v-if="data.screen >= 768" class="logo logo-big" @click="checkLink(data.pages[0])" title="Boolflix">
+            <div class="header-left" :class="{'search-open' : data.smallScreen && data.searchBar}">
+                <div v-if="data.bigScreen" class="logo logo-big" @click="checkLink(data.pages[0])" title="Boolflix">
                     <img src="../../assets/img/logo.png" alt="Boolflix header big logo">
                 </div>
                 <div class="menu">
-                    <div v-if="data.screen < 768" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()" title="Menu">
+                    <div v-if="data.smallScreen" class="menu-button" :class="{'opened' : data.menuIsOpen}" @click.stop="openMenu()" title="Menu">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
-                    <nav v-if="data.screen >= 768 || data.menuIsOpen" class="links">
+                    <nav v-if="data.bigScreen || data.menuIsOpen" class="links">
                         <ul>
                             <li v-for="(link, index) in data.pages" :key="index">
-                                <a :title="link" :class="{'selected': link == data.selected}" @click.prevent="checkLink(link)">{{link}}</a>
+                                <a :title="link" :class="{'selected': link == data.selected && data.search == ''}" @click.prevent="checkLink(link)">{{link}}</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </div>
-            <div v-if="data.screen < 768" class="header-center" :class="{'search-open' : data.screen < 768 && data.searchBar}">
+            <div v-if="data.smallScreen" class="header-center" :class="{'search-open' : data.smallScreen && data.searchBar}">
                 <div class="logo logo-small" @click="checkLink(data.pages[0])" title="Boolflix">
                     <img src="../../assets/img/logo-b.png" alt="Boolflix header small logo">
                 </div>
@@ -69,13 +69,16 @@ export default {
         openSearch() {
             if (!data.searchBar) {
                 data.searchBar = true;
+                this.$refs.searchInput.$el.focus();
             } else if (data.searchBar && !data.search) {
                 data.searchBar = false;
-            } else data.search = '';
+            } else {
+                data.search = '';
+                data.searchBar = false;
+            }
             if (data.menuIsOpen) {
                 data.menuIsOpen = false;
             }
-            this.$refs.searchInput.$el.focus();
         },
         deleteSearch() {
             data.search = '';
@@ -334,8 +337,8 @@ header {
                         width: calc(100% - 2rem);
                         padding-left: 1rem;
                         margin: 0 1rem;
-                        border: 0.5px inset rgba(255,255,255,0.5);
-                        border-radius: 4px;
+                        border: 1px inset rgba(255,255,255,1);
+                        border-radius: 2px;
                         background-color: rgba(0,0,0,0.7);
                         .search-icon {
                             span:last-of-type {

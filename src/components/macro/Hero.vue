@@ -102,6 +102,7 @@ export default {
                 }
             });
             array.length = 10;
+            data.top10 = array;
             return array;
         },
     },

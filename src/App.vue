@@ -42,8 +42,28 @@ export default {
   },
   created() {
     data.screen = window.innerWidth;
+    if (data.screen >= 768) {
+      data.bigScreen = true;
+      data.smallScreen = false;
+    } else {
+      data.bigScreen = false;
+      data.smallScreen = true;
+    }
     window.addEventListener('resize', () => {
       data.screen = window.innerWidth;
+      if (data.screen >= 768) {
+        data.bigScreen = true;
+        data.smallScreen = false;
+      } else {
+        data.bigScreen = false;
+        data.smallScreen = true;
+      }
+    });
+    window.addEventListener('scroll', () => {
+      data.cardInfo.open = false;
+    });
+    window.addEventListener('touchstart', () => {
+      data.device = 'touch';
     });
     window.onbeforeunload = () => {
       window.scrollTo(0, 0);
@@ -56,7 +76,8 @@ export default {
     '$data.data.contentInfo.open'(open) {
       if (open) {
         clearInterval(data.heroInterval);
-      }
+        document.body.style.overflow = 'hidden'
+      } else document.body.style.overflow = 'auto'
     }
   }
 }

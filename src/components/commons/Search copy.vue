@@ -14,26 +14,24 @@ export default {
             searching: false,
             timeout : null,
             movies: [],
-            totalMovies: 0,
-            moviesCounter: 0,
             series: [],
-            totalSeries: 0,
+            moviesCounter: 0,
             seriesCounter: 0,
-            searchApiCalls: false,
-            noResultsQuery: 100
+            totalMovies: 0,
+            totalSeries: 0,
+            searchApiCalls: false
         }
     },
     methods: {
         search(searchQuery) {
             data.searchResults = [];
+            this.movies = [];
+            this.series = [];
             this.moviesCounter = 0;
             this.seriesCounter = 0;
-            this.totalSeries = 0;
-            this.totalMovies = 0;
             this.searchApiCalls = false;
             this.searching = true;
             data.searchLoader = true;
-            this.noResultsQuery = 100;
             this.timeout = setTimeout(() => {
                 const apiParams = {
                     params: {
@@ -43,48 +41,83 @@ export default {
                         region: 'IT'
                     }
                 }
-                const apiParams_pg2 = {
-                    params: {
-                        api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                        query: searchQuery,
-                        language: 'it-IT',
-                        region: 'IT',
-                        page: 2
-                    }
-                }
-                const apiParams_pg3 = {
-                    params: {
-                        api_key: '3390a8a14e621ee87b8e65a286d5c250',
-                        query: searchQuery,
-                        language: 'it-IT',
-                        region: 'IT',
-                        page: 3
-                    }
-                }
                 axios.all([
                     axios.get('https://api.themoviedb.org/3/search/movie', apiParams),
-                    axios.get('https://api.themoviedb.org/3/search/movie', apiParams_pg2),
-                    axios.get('https://api.themoviedb.org/3/search/movie', apiParams_pg3),
-                    axios.get('https://api.themoviedb.org/3/search/tv', apiParams),
-                    axios.get('https://api.themoviedb.org/3/search/tv', apiParams_pg2),
-                    axios.get('https://api.themoviedb.org/3/search/tv', apiParams_pg3)
+                    axios.get('https://api.themoviedb.org/3/search/tv', apiParams)
                 ])
                 .then(response => {
-                    this.movies = response[0].data.results.concat(response[1].data.results, response[2].data.results);
-                    this.totalMovies = response[0].data.results.length + response[1].data.results.length + response[2].data.results.length;
-                    this.series = response[3].data.results.concat(response[4].data.results, response[5].data.results);
-                    this.totalSeries = response[3].data.results.length + response[4].data.results.length + response[5].data.results.length;
-                    if (this.totalMovies > 0) {
-                        this.movies.forEach(movie => {
-                            this.getAdditionalData(movie, apiParams, 'movie');
-                        });
+                    // this.movies = response[0].data.results;
+                    response[0].data.results.forEach(content => {
+                        this.movies.push(content);
+                    });
+                    this.totalMovies = response[0].data.total_results;
+                    console.log(response[0].data.total_pages);
+                    if (response[0].data.total_pages > 1) {
+                        const max = 40;
+                        axios.get('https://api.themoviedb.org/3/search/movie', {
+                            params: {
+                                api_key: '3390a8a14e621ee87b8e65a286d5c250',
+                                query: searchQuery,
+                                language: 'it-IT',
+                                region: 'IT',
+                                page: 2
+                            }
+                        })
+                        .then(response => {
+                            response.data.results.forEach(content => {
+                                this.movies.push(content);
+                            });
+                            if (this.movies.length > 0) {
+                                this.movies.forEach(movie => {
+                                    this.getAdditionalData(movie, apiParams, 'movie', max);
+                                });
+                            }
+                        })
+                    } else {
+                        if (this.movies.length > 0) {
+                            const max = 20;
+                            this.movies.forEach(movie => {
+                                this.getAdditionalData(movie, apiParams, 'movie', max);
+                                this.checkSearchCalls();
+                            });
+                        }
                     }
-                    if (this.totalSeries > 0) {
-                        this.series.forEach(serie => {
-                            this.getAdditionalData(serie, apiParams, 'tv');
-                        });
+                    // this.series = response[1].data.results;
+                    response[1].data.results.forEach(content => {
+                        this.series.push(content);
+                    });
+                    this.totalSeries = response[1].data.total_results;
+                    if (response[1].data.total_pages > 1) {
+                        const max = 40;
+                        axios.get('https://api.themoviedb.org/3/search/tv', {
+                            params: {
+                                api_key: '3390a8a14e621ee87b8e65a286d5c250',
+                                query: searchQuery,
+                                language: 'it-IT',
+                                region: 'IT',
+                                page: 2
+                            }
+                        })
+                        .then(response => {
+                            response.data.results.forEach(content => {
+                                this.series.push(content);
+                            });
+                            if (this.series.length > 0) {
+                                this.series.forEach(movie => {
+                                    this.getAdditionalData(movie, apiParams, 'tv', max);
+                                    this.checkSearchCalls();
+                                });
+                            }
+                        })
+                    } else {
+                        if (this.series.length > 0) {
+                            const max = 20;
+                            this.series.forEach(movie => {
+                                this.getAdditionalData(movie, apiParams, 'tv', max);
+                            });
+                        }
                     }
-                    if (this.totalMovies > 0 || this.totalSeries > 0) {
+                    if (this.movies.length > 0 || this.series.length > 0) {
                         this.checkSearchCalls();
                     } else {
                         this.searching = false
@@ -94,7 +127,7 @@ export default {
                 });
             }, 1500);
         },
-        getAdditionalData(content, apiParams, type) {
+        getAdditionalData(content, apiParams, type, max) {
             // year
             if (content.release_date) {
                 content.year = dayjs(content.release_date, 'YYYY-MM-DD').format('YYYY');  
@@ -220,11 +253,14 @@ export default {
                 }
                 if (type == 'movie') {
                     this.moviesCounter++;
+                    if (this.moviesCounter == this.totalMovies || this.moviesCounter == max) {
+                        this.searchApiCalls = true;
+                    }
                 } else if (type == 'tv') {
                     this.seriesCounter++;
-                }
-                if ((this.moviesCounter == this.totalMovies) && (this.seriesCounter == this.totalSeries)) {
-                    this.searchApiCalls = true;
+                    if (this.seriesCounter == this.totalSeries || this.seriesCounter == max) {
+                        this.searchApiCalls = true;
+                    }
                 }
             })
             .catch(err => {
@@ -233,20 +269,13 @@ export default {
         },
         checkSearchCalls() {
             if (this.searchApiCalls) {
-                const results = this.movies.concat(this.series);
+                data.searchResults = this.movies.concat(this.series);
                 const popularity = (a, b) => {
-                    return b.popularity - a.popularity;
+                    return a.popularity < b.popularity;
                 }
-                results.sort(popularity);
-                data.searchResults = results.filter(content => {
-                    if (content.backdrop_path || content.logo) {
-                        return content;
-                    }
-                });
-                if (data.searchResults.length == 0) {
-                    data.noResults = true;
-                } else data.noResults = false;
+                data.searchResults.sort(popularity);
                 this.searching = false;
+                data.noResults = false;
                 data.searchLoader = false;
             } else setTimeout(() => {
                 this.checkSearchCalls();
@@ -256,20 +285,13 @@ export default {
     watch: {
         '$data.data.search'(searchQuery) {
             window.scrollTo(0,0);
-            if (searchQuery.length < this.noResultsQuery) {
-                if (searchQuery != '' && !this.searching) {
-                    this.search(searchQuery);
-                } else if (searchQuery != '' && this.searching) {
-                    clearTimeout(this.timeout);
-                    this.search(searchQuery);
-                } else {
-                    clearTimeout(this.timeout);
-                }
-            }
-        },
-        '$data.data.noResults'(noResults) {
-            if (noResults) {
-                this.noResultsQuery = data.search.length;
+            if (searchQuery != '' && !this.searching) {
+                this.search(searchQuery);
+            } else if (searchQuery != '' && this.searching) {
+                clearTimeout(this.timeout);
+                this.search(searchQuery);
+            } else {
+                clearTimeout(this.timeout);
             }
         }
     }

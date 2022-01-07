@@ -1,12 +1,12 @@
 <template>
     <main>
         <div class="pages">
-            <Home v-if="data.selected == data.pages[0]"/>
-            <Series v-if="data.selected == data.pages[1]"/>
-            <Movies v-if="data.selected == data.pages[2]"/>
+            <Home v-if="data.selected == data.pages[0]" v-show="data.search == ''"/>
+            <Series v-if="data.selected == data.pages[1]" v-show="data.search == ''"/>
+            <Movies v-if="data.selected == data.pages[2]" v-show="data.search == ''"/>
+            <SearchPage v-if="data.search != ''"/>
         </div>
         <!-- <Saved v-if="data.selected == data.pages[4]"/> -->
-        <!-- <CardHovered v-if="data.show"/> -->
     </main>
 </template>
 
@@ -14,9 +14,9 @@
 import Home from '../pages/Home.vue'
 import Series from '../pages/Series.vue'
 import Movies from '../pages/Movies.vue'
+import SearchPage from '../pages/SearchPage.vue'
 // import Trending from '../pages/Trending.vue'
 // import Saved from '../pages/Saved.vue'
-// import CardHovered from '../commons/CardHovered.vue'
 import data from '../../share/data.js'
 export default {
     name: "Main",
@@ -24,9 +24,9 @@ export default {
         Home,
         Series,
         Movies,
+        SearchPage
         // Trending,
         // Saved,
-        // CardHovered,
     },
     data() {
         return {
