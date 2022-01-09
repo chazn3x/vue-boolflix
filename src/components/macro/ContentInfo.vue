@@ -1,13 +1,11 @@
 <template>
     <div class="content-info" ref="content" :class="{'active' : data.contentInfo.open}" @click="closeInfo()" v-if="data.contentInfo.content">
         <div class="card" @click.stop>
-            <div class="close-icon" @click="closeInfo()">
-                <div class="icon">
-                    <span></span>
-                    <span></span>
-                </div>
+            <div class="btn close" @click="closeInfo()" title="Chiudi">
+                <span></span>
+                <span></span>
             </div>
-            <div class="preview" ref="preview" :style="{height: previewHeight}">
+            <div class="preview" ref="preview">
                 <img :src="'https://image.tmdb.org/t/p/original/' + content.backdrop_path" alt="">
                 <div v-show="content.key != 'abc'" class="video" ref="youtubeWrapper">
                     <youtube
@@ -19,35 +17,10 @@
                     @error="error()"
                     @playing="playing()"
                     @ended="ended()"
-                    @paused="paused()"
                     ref="youtube"
                     ></youtube>
                 </div>
                 <div class="layover" ref="layover"></div>
-                <div class="video-controls" v-if="content.key != 'abc'" :class="{'full-screen' : isFullScreen}" ref="controls">
-                    <div class="btn play-pause" :class="isPlaying ? 'pause' : 'play'" @click="playPause()">
-                        <div class="btn-container">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-                    <div v-if="!isStopped" class="btn stop" @click="stop()">
-                        <div class="square"></div>
-                    </div>
-                    <div class="btn volume" :class="{'unmute' : !isMuted}" @click="volume()">
-                        <img src="../../assets/img/buttons/volume.png" alt="">
-                        <span></span>
-                    </div>
-                    <div class="btn screen" @click="fullScreen()">
-                        <div class="square">
-                            <div class="squares"></div>
-                            <div class="squares"></div>
-                            <div class="squares"></div>
-                            <div class="squares"></div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="info">
                 <div class="content-type" v-if="content.media_type == 'movie' || content.media_type == 'tv'">
@@ -60,10 +33,32 @@
                     <img v-if="content.logo" :src="'https://image.tmdb.org/t/p/original/' + content.logo" alt="">
                     <h2 v-else>{{content.title || content.name}}</h2>
                 </div>
+                <div class="buttons row">
+                    <button class="trailer" title="Trailer" v-if="content.key != 'abc'">
+                        <a :href="'https://www.youtube.com/watch?v=' + content.key" target="_blank">
+                            <i class="fas fa-play"></i>
+                            <span>Trailer</span>
+                        </a>
+                    </button>
+                    <div class="btn save" :class="{'remove' : data.savedIds.includes(content.id)}" @click="save()">
+                        <span></span>
+                        <span></span>
+                        <div class="btn-title">
+                            <div class="text">
+                                {{(data.savedIds.includes(content.id) ? 'Rimuovi da' : 'Aggiungi a')}} La mia lista
+                            </div>
+                            <div class="square"></div>
+                        </div>
+                    </div>
+                    <div class="btn volume" :class="{'unmute' : !isMuted}" @click="volume()" title="Volume">
+                        <img src="../../assets/img/buttons/volume.png" alt="">
+                        <span></span>
+                    </div>
+                </div>
                 <div class="text row">
                     <div class="left">
                         <div class="row top">
-                            <div class="vote" v-if="content.vote_average">
+                            <div class="vote" v-if="content.vote_average" :class="{'green' : content.vote_average >= 6, 'yellow' : content.vote_average >= 4 && content.vote_average < 6, 'red' : content.vote_average < 4}">
                                 <p>{{content.vote_average * 10}}% di voti positivi</p>
                             </div>
                             <div v-if="content.year" class="year">
@@ -139,10 +134,7 @@ export default {
                 controls: 0,
                 rel: 0
             },
-            isPlaying: false,
-            isStopped: true,
             isMuted: true,
-            isFullScreen: false,
             timeout: null,
         }
     },
@@ -150,14 +142,11 @@ export default {
         closeInfo() {
             document.body.style.overflow = 'auto';
             data.contentInfo.open = false
-            this.isPlaying = false;
         },
         error() {
             this.YTWrapper.style.opacity = '0';
         },
         playing() {
-            this.isPlaying = true;
-            this.isStopped = false;
             setTimeout(() => {
                 this.YTWrapper.style.opacity = '1';
             }, 500);
@@ -165,26 +154,6 @@ export default {
         ended() {
             this.player.stopVideo();
             this.YTWrapper.style.opacity = '0';
-            this.isPlaying = false;
-            this.isStopped = true;
-        },
-        paused() {
-            this.isPlaying = false;
-            this.YTWrapper.style.opacity = '0';
-        },
-        playPause() {
-            if (this.isPlaying) {
-                this.player.pauseVideo();
-            } else {
-                this.player.playVideo();
-                // this.YTWrapper.style.opacity = '1';
-            }
-        },
-        stop() {
-            this.YTWrapper.style.opacity = '0';
-            this.player.stopVideo();
-            this.isPlaying = false;
-            this.isStopped = true;
         },
         volume() {
             if (this.isMuted) {
@@ -193,40 +162,6 @@ export default {
             } else {
                 this.isMuted = true;
                 this.player.mute();
-            }
-        },
-        fullScreen() {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-                if (this.$refs.preview.requestFullscreen) {
-                    this.$refs.preview.requestFullscreen();
-                } else if (this.$refs.preview.webkitRequestFullscreen) {
-                    this.$refs.preview.webkitRequestFullscreen();
-                } else if (this.$refs.preview.msRequestFullscreen) {
-                    this.$refs.preview.msRequestFullscreen();
-                }
-                if (this.isMuted) {
-                    this.isMuted = false;
-                    this.player.unMute();
-                }
-                if (!this.isPlaying) {
-                    this.isPlaying = true;
-                    this.$refs.youtube.player.playVideo();
-                }
-                this.YTWrapper.style.opacity = '1';
-                if (data.device == 'touch') {
-                    screen.orientation.lock("landscape");
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                if (data.device == 'touch') {
-                    screen.orientation.lock("portrait");
-                }
             }
         },
         showControls() {
@@ -243,6 +178,20 @@ export default {
                 this.$refs.preview.style.cursor = 'none';
             }, 3000);
         },
+        save() {
+            let save = true;
+            for (let i = 0; i < data.saved.length; i++) {
+                if (data.saved[i].id == this.content.id) {
+                    data.saved.splice(i, 1);
+                    data.savedIds.splice(i, 1);
+                    save = false;
+                }
+            }
+            if (save) {
+                data.saved.unshift(this.content);
+                data.savedIds.unshift(this.content.id);
+            }
+        },
     },
     computed: {
         content() {
@@ -253,15 +202,6 @@ export default {
         },
         YTWrapper() {
             return this.$refs.youtubeWrapper;
-        },
-        playerControls() {
-            return this.$refs.controls;
-        },
-        previewHeight() {
-            let height;
-            if (data.bigScreen) height = 768 * 0.56 + 'px';
-            else height = data.screen * 0.56 + 'px';
-            return height;
         }
     },
     watch: {
@@ -274,46 +214,13 @@ export default {
                 });
             } else this.$refs.youtube.player.stopVideo();
         }
-    },
-    created() {
-        const controls = () => {
-            this.showControls();
-        };
-        document.addEventListener('fullscreenchange', () => {
-            this.isFullScreen = !this.isFullScreen;
-            if (this.isFullScreen) {
-                this.$refs.layover.style.opacity = '0';
-                this.hideControls();
-                this.$refs.preview.addEventListener('mousemove', controls, true);
-            } else {
-                this.$refs.preview.removeEventListener('mousemove', controls, true);
-                this.$refs.layover.style.opacity = '1';
-                clearTimeout(this.timeout);
-                this.$refs.preview.style.cursor = 'default';
-                this.playerControls.style.opacity = '1';
-                this.playerControls.style.visibility = 'visible';
-            }
-        });
-        document.addEventListener('webkitfullscreenchange', () => {
-            this.isFullScreen = !this.isFullScreen;
-            if (this.isFullScreen) {
-                this.$refs.layover.style.opacity = '0';
-                this.hideControls();
-                this.$refs.preview.addEventListener('mousemove', controls, true);
-            } else {
-                this.$refs.preview.removeEventListener('mousemove', controls, true);
-                this.$refs.layover.style.opacity = '1';
-                clearTimeout(this.timeout);
-                this.$refs.preview.style.cursor = 'default';
-                this.playerControls.style.opacity = '1';
-                this.playerControls.style.visibility = 'visible';
-            }
-        });
     }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/style/mixins/mixin.scss';
+@include btn;
 .content-info {
     position: fixed;
     top: 0;
@@ -334,51 +241,30 @@ export default {
         min-height: 100vh;
         position: relative;
         padding: 1rem;
-        overflow: hidden;
-        .close-icon {
+        // overflow: hidden;
+        .btn.close {
             position: absolute;
             top: 0;
             right: 0;
             margin: 1rem;
-            width: 2.3rem;
-            height: 2.3rem;
-            background-color: rgba(0,0,0,0.5);
-            border: .5px solid rgba(200,200,200,0.3);
-            border-radius: 50%;
-            transition: opacity .2s;
-            &:hover {
-                opacity: .8;
-            }
-            .icon {
-                position: relative;
-                width: 100%;
-                height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            border: none;
                 span {
-                    display: block;
-                    width: 65%;
-                    height: 1px;
-                    position: absolute;
-                    top: 50%;
-                    border-radius: .5px;
-                    background-color: #fff;
+                    width: 60%;
                 }
                 span:first-of-type {
-                    left: 50%;
-                    transform-origin: left;
-                    transform: rotate(45deg) translate(-50%, -50%);
+                    transform: rotate(45deg);
                 }
                 span:last-of-type {
-                    right: 50%;
-                    transform-origin: right;
-                    transform: rotate(-45deg) translate(50%, -50%);
+                    transform: rotate(-45deg);
                 }
-            }
         }
         .preview {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
+            height: calc(100vw * 0.56);
             z-index: -1;
             overflow: hidden;
             >img {
@@ -406,161 +292,6 @@ export default {
                 width: 100%;
                 height: 100%;
                 background: linear-gradient(rgba(0,0,0,0) 30%, rgba(20,20,20,1) 100%);
-            }
-            .video-controls {
-                display: flex;
-                position: absolute;
-                top: 0;
-                left: 0;
-                margin: 1rem;
-                .btn {
-                    width: 2.4rem;
-                    height: 2.4rem;
-                    border-radius: 50%;
-                    margin-right: .6rem;
-                    background-color: rgba(0,0,0,0.4);
-                    border: 2px solid rgba(200,200,200,0.5);
-                    position: relative;
-                    transition: opacity .2s;
-                    span {
-                        display: block;
-                        width: 100%;
-                        height: 1px;
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        border-radius: .5px;
-                        background-color: #fff;
-                        transition: .2s;
-                    }
-                    &.play-pause.play {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        .btn-container {
-                            width: 70%;
-                            height: 70%;
-                            position: relative;
-                            transform: rotate(-30deg);
-                            span {
-                                width: 86.6%;
-                                left: 50%;
-                            }
-                            span:first-of-type {
-                                top: 75%;
-                                transform: translateX(-50%);
-                            }
-                            span:nth-of-type(2) {
-                                transform-origin: left;
-                                transform: rotate(60deg);
-                            }
-                            span:last-of-type {
-                                transform-origin: left;
-                                transform: rotate(120deg);
-                            }
-                        }
-                    }
-                    &.play-pause.pause {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        .btn-container {
-                            width: 60%;
-                            height: 60%;
-                            position: relative;
-                            span {
-                                transform: rotate(90deg);
-                                top: 50%;
-                            }
-                            span:first-of-type {
-                                left: -20%;
-                            }
-                            span:nth-of-type(2) {
-                                opacity: 0;
-                            }
-                            span:last-of-type {
-                                left: 20%;
-                            }
-                        }
-                    }
-                    &.stop {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        .square {
-                            width: 50%;
-                            height: 50%;
-                            border: 1px solid white;
-                        }
-                    }
-                    &.volume {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        img {
-                            width: 55%;
-                            filter: invert(1);
-                        }
-                        span {
-                            opacity: 1;
-                            top: 50%;
-                            left: 50%;
-                            width: 70%;
-                            transform: rotate(45deg) translate(-50%, -50%);
-                            transform-origin: left;
-                        }
-                        &.unmute {
-                            span {
-                                opacity: 0;
-                            }
-                        }
-                    }
-                    &.screen {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        .square {
-                            width: 50%;
-                            height: 50%;
-                            position: relative;
-                            .squares {
-                                width: 30%;
-                                height: 30%;
-                                position: absolute;
-                            }
-                            .squares:nth-of-type(1) {
-                                top: 0;
-                                left: 0;
-                                border-top: 1px solid white;
-                                border-left: 1px solid white;
-                            }
-                            .squares:nth-of-type(2) {
-                                top: 0;
-                                right: 0;
-                                border-top: 1px solid white;
-                                border-right: 1px solid white;
-                            }
-                            .squares:nth-of-type(3) {
-                                bottom: 0;
-                                left: 0;
-                                border-bottom: 1px solid white;
-                                border-left: 1px solid white;
-                            }
-                            .squares:nth-of-type(4) {
-                                bottom: 0;
-                                right: 0;
-                                border-bottom: 1px solid white;
-                                border-right: 1px solid white;
-                            }
-                        }
-                    }
-                    &:hover {
-                        opacity: .8;
-                    }
-                }
-                &.full-screen {
-                    transition: .5s;
-                }
             }
         }
         .info {
@@ -600,19 +331,84 @@ export default {
             .row {
                 display: flex;
             }
+            .buttons {
+                align-items: center;
+                margin-top: 1rem;
+                .trailer {
+                    margin-right: .8rem;
+                    display: block;
+                    border: none;
+                    box-shadow: none;
+                    border-radius: 4px;
+                    background-color: #fff;
+                    a {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: .3rem 2rem;
+                        color: black;
+                        font-size: 1.5rem;
+                        font-weight: 400;
+                        span {
+                            display: inline-block;
+                            padding-left: 1rem;
+                        }
+                    }
+                }
+                .btn {
+                    &.save {
+                        span {
+                            width: 50%;
+                        }
+                        span:last-of-type {
+                            transform: rotate(90deg);
+                            -webkit-transform: rotate(90deg);
+                        }
+                        &.remove {
+                            span:last-of-type {
+                                opacity: 0;
+                            }
+                        }
+                    }
+                    &.volume {
+                        margin-left: auto;
+                        img {
+                            width: 55%;
+                            filter: invert(.9);
+                        }
+                        span {
+                            opacity: 1;
+                            width: 65%;
+                            transform: rotate(45deg);
+                            -webkit-transform: rotate(45deg);
+                        }
+                        &.unmute {
+                            span {
+                                opacity: 0;
+                            }
+                        }
+                    }
+                }
+            }
             .text {
                 margin-top: 1.5rem;
                 margin-bottom: 2rem;
                 flex-direction: column;
                 .top {
                     align-items: center;
-                    margin-bottom: 1rem;
+                    margin-bottom: .6rem;
                     .vote {
                         font-size: 1rem;
                         font-weight: 500;
                         margin-right: .4rem;
-                        p {
+                        &.green p {
                             color: rgb(70,211,105);
+                        }
+                        &.yellow p {
+                            color: rgb(211, 185, 70);
+                        }
+                        &.red p {
+                            color: rgb(211, 75, 70);
                         }
                     }
                     .year {
@@ -628,7 +424,7 @@ export default {
                     margin-top: 1rem;
                     font-weight: 400;
                     .list-title {
-                        font-weight: 500;
+                        font-weight: 300;
                         color: grey;
                     }
                     &>* {
@@ -664,7 +460,7 @@ export default {
                     margin-top: 1rem;
                     font-weight: 400;
                     .list-title {
-                        font-weight: 500;
+                        font-weight: 300;
                         color: grey;
                     }
                     p {
@@ -685,18 +481,9 @@ export default {
             padding: 2rem;
             width: 768px;
             border-radius: .5rem;
-            .close-icon {
-                cursor: pointer;
-            }
             .preview {
-                img {
-                    border-radius: .5rem .5rem 0 0;
-                }
-                .video-controls {
-                    .btn {
-                        cursor: pointer;
-                    }
-                }
+                height: calc(768px * 0.56);
+                border-radius: .5rem .5rem 0 0;
             }
         }
         .info {

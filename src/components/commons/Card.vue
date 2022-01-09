@@ -78,8 +78,8 @@ export default {
         }
     },
     mounted() {
-        data.top10.forEach(content => {
-            if (this.content.id == content.id) {
+        data.top10.forEach(id => {
+            if (this.content.id == id) {
                 this.top = true;
             }
         });

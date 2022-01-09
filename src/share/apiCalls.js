@@ -101,6 +101,28 @@ function getDataFromEndpoints() {
 // all api calls
 function checkApiCalls() {
     if (apiStatus == 2) {
+        // console.log(data.trending.moviesDay[0]);
+        let i = 0;
+        while (data.top10.length < 10) {
+            if (data.trending.allDay[i].overview) {
+                data.top10.push(data.trending.allDay[i].id);
+            }
+            i++;
+        }
+        i = 0;
+        while (data.top10Movies.length < 10) {
+            if (data.trending.moviesDay[i].overview) {
+                data.top10Movies.push(data.trending.moviesDay[i].id);
+            }
+            i++;
+        }
+        i = 0;
+        while (data.top10Series.length < 10) {
+            if (data.trending.seriesDay[i].overview) {
+                data.top10Series.push(data.trending.seriesDay[i].id);
+            }
+            i++;
+        }
         data.apiCalls = true;
     } else setTimeout(() => {
         checkApiCalls();

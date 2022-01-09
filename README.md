@@ -3,7 +3,6 @@
 ## Milestones
 ```
 - Aggiungere 'Nuovi e popolari';
-- Aggiungere 'La mia lista';
 - Aggiungere categorie per film e serie TV;
 - Potenziare la ricerca;
 - Effettuare altre chiamate API a TMDB con un pulsante 'Mostra altro' o in altro modo;
@@ -12,9 +11,8 @@
 ## To fix
 ```
 - Dimensioni preview;
-- Dimensioni titolo hero;
-- Start/stop carosello hero con ricerca;
 - Cambio pagina con ricerca;
+- Transizione apertura/chiusura informazioni;
 ```
 
 ## Project setup

@@ -1,5 +1,5 @@
 <template>
-    <div class="cards" v-if="data.apiCalls && data.top10.length > 0">
+    <div class="cards">
         <div v-if="data.bigScreen && data.device != 'touch'" class="chevron next" @click="next()">
             <img src="../../assets/img/chevron.png" alt="">
         </div>
@@ -13,20 +13,17 @@
             <Card v-for="content in contents" :key="content.id" :content="content"/>
         </div>
     </div>
-    <Loader v-else/>
 </template>
 
 <script>
 import Card10 from './Card10.vue'
 import Card from './Card.vue'
-import Loader from './Loader.vue'
 import data from '../../share/data.js'
 export default {
     name: "Cards",
     components: {
         Card10,
-        Card,
-        Loader
+        Card
     },
     props: {
         contents: Array,
@@ -45,6 +42,11 @@ export default {
             this.$refs.cards.scrollLeft -= 300;
         }
     },
+    watch: {
+        '$data.data.selected'() {
+            this.$refs.cards.scrollLeft = 0;
+        }
+    }
 }
 </script>
 

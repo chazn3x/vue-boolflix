@@ -4,6 +4,7 @@
         <div class="card-loader" ref="second"></div>
         <div class="card-loader" ref="third"></div>
         <div class="card-loader" ref="fourth"></div>
+        <div class="card-loader" ref="fifth"></div>
     </div>
 </template>
 
@@ -11,26 +12,32 @@
 export default {
     name: 'Loader',
     mounted() {
+        const timeout = 200;
         setTimeout(() => {
             if (this.$refs.first) {
-                this.$refs.first.style.opacity = "1";
+                this.$refs.first.style.display = "block";
             }
         });
         setTimeout(() => {
             if (this.$refs.second) {
-                this.$refs.second.style.opacity = "1";
+                this.$refs.second.style.display = "block";
             }
-        }, 400);
+        }, timeout);
         setTimeout(() => {
             if (this.$refs.third) {
-                this.$refs.third.style.opacity = "1";
+                this.$refs.third.style.display = "block";
             }
-        }, 800);
+        }, timeout * 2);
         setTimeout(() => {
             if (this.$refs.fourth) {
-                this.$refs.fourth.style.opacity = "1";
+                this.$refs.fourth.style.display = "block";
             }
-        }, 1200);
+        }, timeout * 3);
+        setTimeout(() => {
+            if (this.$refs.fifth) {
+                this.$refs.fifth.style.display = "block";
+            }
+        }, timeout * 4);
     }
 }
 </script>
@@ -43,26 +50,31 @@ export default {
         align-items: flex-start;
         overflow-x: hidden;
         .card-loader {
-            opacity: 0;
-            transition: opacity .3s;
-            width: 200px;
-            aspect-ratio: 16 / 9;
+            display: none;
+            width: 120px;
+            height: calc(120px * 1.4);
             flex-shrink: 0;
             margin-right: 10px;
+            margin-bottom: 10px;
             border-radius: 7px;
-            background: linear-gradient(270deg, rgb(40,40,40), rgb(30,30,30));
-            background-size: 400% 400%;
+            background: rgb(40,40,40);
             animation: loading 2s linear infinite;
             @keyframes loading {
                 0% {
-                    background-position: 0% 50%;
+                    opacity: .2;
                 }
                 50% {
-                    background-position: 100% 50%;
+                    opacity: 1;
                 }
                 100% {
-                    background-position: 0% 50%;
+                    opacity: .2;
                 }
+            }
+        }
+        @media screen and (min-width: 768px) {
+            .card-loader {
+                width: 290px;
+                height: calc(290px * 0.56);
             }
         }
     }

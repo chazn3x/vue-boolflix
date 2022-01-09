@@ -45,8 +45,8 @@ export default {
         width: 70px;
         height: 70px;
         border-radius: 50%;
-        border-top: 3px inset rgb(230,30,20);
-        border-right: 3px inset rgb(20,20,20);
+        border-top: 3px solid rgb(230,30,20);
+        border-right: 3px solid rgb(20,20,20);
         animation: loading 1s linear infinite;
         @keyframes loading {
             100% {

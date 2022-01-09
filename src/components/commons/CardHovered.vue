@@ -13,12 +13,18 @@
                 <div class="content-title" @click="openInfo()">
                     <h4>{{content.title || content.name}}</h4>
                 </div>
-                <div class="info-btn" title="Mostra informazioni" @click="openInfo()">
+                <div class="btn" @click="openInfo()">
                     <i class="fas fa-chevron-down"></i>
+                    <div class="btn-title">
+                        <div class="text">
+                            Altre info
+                        </div>
+                        <div class="square"></div>
+                    </div>
                 </div>
             </div>
             <div class="middle-row">
-                <div v-if="content.vote_average" class="vote">
+                <div v-if="content.vote_average" class="vote" :class="{'green' : content.vote_average >= 6, 'yellow' : content.vote_average >= 4 && content.vote_average < 6, 'red' : content.vote_average < 4}">
                     <p>{{content.vote_average * 10}}% di voti positivi</p>
                 </div>
                 <div v-if="content.year" class="year">
@@ -62,6 +68,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../assets/style/mixins/mixin.scss';
+@include btn;
 .card-hovered {
     position: fixed;
     top: 0;
@@ -72,9 +80,10 @@ export default {
     width: 0;
     height: 0;
     border-radius: 7px;
-    overflow: hidden;
     z-index: 10;
-    transition: width .2s, height .2s;
+    opacity: 0;
+    transition: width .2s, height .2s, opacity .4s;
+    overflow: hidden;
     .preview {
         width: 100%;
         height: calc(400px * 0.56);
@@ -111,24 +120,6 @@ export default {
                 -webkit-line-clamp: 1;
                 -webkit-box-orient: vertical;
             }
-            .info-btn {
-                flex-shrink: 0;
-                width: 2.4rem;
-                height: 2.4rem;
-                border-radius: 50%;
-                margin-right: .6rem;
-                background-color: rgba(0,0,0,0.4);
-                border: 2px solid rgba(200,200,200,0.5);
-                transition: opacity .2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: rgba(200,200,200,1);
-                cursor: pointer;
-                &:hover {
-                    opacity: .8;
-                }
-            }
         }
         .middle-row {
             display: flex;
@@ -138,8 +129,14 @@ export default {
                 font-size: 1rem;
                 font-weight: 500;
                 margin-right: .4rem;
-                p {
+                &.green p {
                     color: rgb(70,211,105);
+                }
+                &.yellow p {
+                    color: rgb(211, 185, 70);
+                }
+                &.red p {
+                    color: rgb(211, 75, 70);
                 }
             }
             .year {
@@ -162,6 +159,8 @@ export default {
     &.show {
         width: 400px;
         height: 350px;
+        opacity: 1;
+        overflow: unset;
         .transition {
             opacity: 1;
         }

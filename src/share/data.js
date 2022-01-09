@@ -16,7 +16,6 @@ export default Vue.observable({
         open: false,
         content: null
     },
-    heroInterval: null,
     cardInfo: {
         open: false,
         timeout: null
@@ -34,5 +33,7 @@ export default Vue.observable({
         seriesDay: [],
     },
     top10: [],
+    top10Movies: [],
+    top10Series: [],
     genres: [],
 });
