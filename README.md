@@ -1,14 +1,20 @@
 # Boolflix
 
 ## Description:
-Boolflix is a Netflix-styled web app that uses [The Movie Database](https://www.themoviedb.org) APIs to show movies and tv series from all around the world.
+Boolflix is a responsive Netflix-styled web app that uses [The Movie Database](https://www.themoviedb.org) APIs to show movies and tv series from all around the world.
 
 I've made it only for educational purposes.
 
 ## Screenshots:
-![image](screenshots/home.png)
-![image](screenshots/content-info.png)
-![image](screenshots/search-engine.png)
+<div style="display: flex">
+  <img src="screenshots/home.png" height="200">
+  <img src="screenshots/content-info.png" height="200">
+  <img src="screenshots/search-engine.png" height="200">
+  <img src="screenshots/home-mobile.png" height="200">
+  <img src="screenshots/content-info-mobile.png" height="200">
+  <img src="screenshots/menu-mobile.png" height="200">
+  <img src="screenshots/search-engine-mobile.png" height="200">
+</div>
 
 ## Tecnologies, addons and plugins used:
 - HTML;
