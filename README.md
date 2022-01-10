@@ -6,9 +6,9 @@ Boolflix is a Netflix-styled web app that uses [The Movie Database](https://www.
 I've made it only for educational purposes.
 
 ## Screenshots:
-```
-
-```
+![image](screenshots/home.png)
+![image](screenshots/content-info.png)
+![image](screenshots/search-engine.png)
 
 ## Tecnologies, addons and plugins used:
 - HTML;
