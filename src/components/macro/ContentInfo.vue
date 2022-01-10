@@ -92,12 +92,6 @@
                             <img :src="'https://image.tmdb.org/t/p/original/' + backdrop.file_path" alt="">
                         </a>
                     </div>
-                    <!-- <h3>Loghi</h3>
-                    <div class="logos" ref="logos">
-                        <div class="logo" v-for="(logo, index) in images.logos" :key="index">
-                            <img :src="'https://image.tmdb.org/t/p/original/' + logo.file_path" alt="">
-                        </div>
-                    </div> -->
                 </div>
                 <div class="more-info">
                     <h3>Info su <strong>{{content.title || content.name}}</strong></h3>
