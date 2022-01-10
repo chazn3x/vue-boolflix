@@ -26,7 +26,7 @@
                             <span>JavaScript</span>
                         </li>
                         <li>
-                            <a href="https://vuejs.org" target="_blank">Vue.js</a>
+                            <a href="https://vuejs.org" target="_blank">Vue CLI</a>
                         </li>
                     </ul>
                 </div>
