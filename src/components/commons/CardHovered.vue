@@ -15,11 +15,11 @@
                 </div>
                 <div class="btn" @click="openInfo()">
                     <i class="fas fa-chevron-down"></i>
-                    <div class="btn-title">
-                        <div class="text">
+                    <div class="btn__title">
+                        <div class="btn__text">
                             Altre info
                         </div>
-                        <div class="square"></div>
+                        <div class="btn__square"></div>
                     </div>
                 </div>
             </div>
@@ -89,6 +89,8 @@ export default {
         height: calc(400px * 0.56);
         position: relative;
         cursor: pointer;
+        border-radius: 7px 7px 0 0;
+        overflow: hidden;
         .backdrop img {
             width: 100%;
             height: 100%;
