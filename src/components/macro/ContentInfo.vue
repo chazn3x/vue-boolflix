@@ -59,7 +59,7 @@
                     <div class="left">
                         <div class="row top">
                             <div class="vote" v-if="content.vote_average" :class="{'green' : content.vote_average >= 6, 'yellow' : content.vote_average >= 4 && content.vote_average < 6, 'red' : content.vote_average < 4}">
-                                <p>{{content.vote_average * 10}}% di voti positivi</p>
+                                <p>{{Math.floor(content.vote_average * 10)}}% di voti positivi</p>
                             </div>
                             <div v-if="content.year" class="year">
                                 <span>{{content.year}}</span>
